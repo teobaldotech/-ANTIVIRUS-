@@ -4,30 +4,41 @@
   <meta charset="UTF-8">
   <title>Antivírus Simples</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+    h1 { color: #333; }
     .safe { color: green; }
     .danger { color: red; }
+    #conteudoArquivo { white-space: pre-wrap; background: #fff; padding: 10px; border: 1px solid #ccc; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-  <h1>Antivírus Simples</h1>
+  <h1>🛡️ Antivírus Simples</h1>
   <p>Selecione um arquivo de texto para escanear:</p>
   <input type="file" id="fileInput" accept=".txt">
   <button onclick="escanearArquivo()">Escanear</button>
 
-  <h2>Resultado:</h2>
+  <h2>🔍 Resultado:</h2>
   <div id="resultado"></div>
+
+  <h3>📄 Conteúdo do Arquivo:</h3>
+  <div id="conteudoArquivo"></div>
 
   <script>
     const palavrasSuspeitas = ["virus", "trojan", "malware", "worm", "hacker"];
 
+    function normalizar(texto) {
+      return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
     function escanearArquivo() {
       const input = document.getElementById('fileInput');
       const resultado = document.getElementById('resultado');
+      const conteudoDiv = document.getElementById('conteudoArquivo');
 
       if (!input.files.length) {
         resultado.innerHTML = "<p class='danger'>Nenhum arquivo selecionado.</p>";
+        conteudoDiv.innerHTML = "";
         return;
       }
 
@@ -35,18 +46,15 @@
       const leitor = new FileReader();
 
       leitor.onload = function(e) {
-        const conteudo = e.target.result.toLowerCase();
-        let encontrou = false;
+        const conteudoOriginal = e.target.result;
+        const conteudo = normalizar(conteudoOriginal);
+        conteudoDiv.textContent = conteudoOriginal;
 
-        for (let palavra of palavrasSuspeitas) {
-          if (conteudo.includes(palavra)) {
-            resultado.innerHTML = `<p class='danger'>Atenção! Palavra suspeita detectada: <strong>${palavra}</strong></p>`;
-            encontrou = true;
-            break;
-          }
-        }
+        const encontradas = palavrasSuspeitas.filter(palavra => conteudo.includes(palavra));
 
-        if (!encontrou) {
+        if (encontradas.length > 0) {
+          resultado.innerHTML = `<p class='danger'>Atenção! Palavras suspeitas detectadas: <strong>${encontradas.join(', ')}</strong></p>`;
+        } else {
           resultado.innerHTML = "<p class='safe'>Nenhuma ameaça detectada.</p>";
         }
       };
