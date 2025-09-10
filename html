@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Antivírus Simples</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .safe { color: green; }
+    .danger { color: red; }
+  </style>
+</head>
+<body>
+
+  <h1>Antivírus Simples</h1>
+  <p>Selecione um arquivo de texto para escanear:</p>
+  <input type="file" id="fileInput" accept=".txt">
+  <button onclick="escanearArquivo()">Escanear</button>
+
+  <h2>Resultado:</h2>
+  <div id="resultado"></div>
+
+  <script>
+    const palavrasSuspeitas = ["virus", "trojan", "malware", "worm", "hacker"];
+
+    function escanearArquivo() {
+      const input = document.getElementById('fileInput');
+      const resultado = document.getElementById('resultado');
+
+      if (!input.files.length) {
+        resultado.innerHTML = "<p class='danger'>Nenhum arquivo selecionado.</p>";
+        return;
+      }
+
+      const arquivo = input.files[0];
+      const leitor = new FileReader();
+
+      leitor.onload = function(e) {
+        const conteudo = e.target.result.toLowerCase();
+        let encontrou = false;
+
+        for (let palavra of palavrasSuspeitas) {
+          if (conteudo.includes(palavra)) {
+            resultado.innerHTML = `<p class='danger'>Atenção! Palavra suspeita detectada: <strong>${palavra}</strong></p>`;
+            encontrou = true;
+            break;
+          }
+        }
+
+        if (!encontrou) {
+          resultado.innerHTML = "<p class='safe'>Nenhuma ameaça detectada.</p>";
+        }
+      };
+
+      leitor.readAsText(arquivo);
+    }
+  </script>
+
+</body>
+</html>
