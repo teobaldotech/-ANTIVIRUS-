@@ -8,21 +8,27 @@
     h1 { color: #333; }
     .safe { color: green; }
     .danger { color: red; }
-    #conteudoArquivo { white-space: pre-wrap; background: #fff; padding: 10px; border: 1px solid #ccc; margin-top: 10px; }
+    .card { background: #fff; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; }
+    #historico { margin-top: 30px; }
+    ul { list-style: none; padding: 0; }
+    li { background: #fff; padding: 10px; margin-bottom: 5px; border: 1px solid #ccc; }
   </style>
 </head>
 <body>
 
   <h1>🛡️ Antivírus Simples</h1>
-  <p>Selecione um arquivo de texto para escanear:</p>
-  <input type="file" id="fileInput" accept=".txt">
-  <button onclick="escanearArquivo()">Escanear</button>
+  <p>Selecione arquivos de texto para escanear:</p>
+  <input type="file" id="fileInput" accept=".txt" multiple>
+  <button onclick="escanearArquivos()">Escanear</button>
 
-  <h2>🔍 Resultado:</h2>
-  <div id="resultado"></div>
+  <h2>🔍 Resultados:</h2>
+  <div id="resultados"></div>
 
-  <h3>📄 Conteúdo do Arquivo:</h3>
-  <div id="conteudoArquivo"></div>
+  <div id="historico">
+    <h3>🗂️ Histórico de Escaneamentos</h3>
+    <ul id="listaHistorico"></ul>
+    <button onclick="limparHistorico()">🧹 Limpar Histórico</button>
+  </div>
 
   <script>
     const palavrasSuspeitas = ["virus", "trojan", "malware", "worm", "hacker"];
@@ -31,36 +37,73 @@
       return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
-    function escanearArquivo() {
+    function escanearArquivos() {
       const input = document.getElementById('fileInput');
-      const resultado = document.getElementById('resultado');
-      const conteudoDiv = document.getElementById('conteudoArquivo');
+      const resultados = document.getElementById('resultados');
+      resultados.innerHTML = "";
 
       if (!input.files.length) {
-        resultado.innerHTML = "<p class='danger'>Nenhum arquivo selecionado.</p>";
-        conteudoDiv.innerHTML = "";
+        resultados.innerHTML = "<p class='danger'>Nenhum arquivo selecionado.</p>";
         return;
       }
 
-      const arquivo = input.files[0];
-      const leitor = new FileReader();
+      Array.from(input.files).forEach(arquivo => {
+        const leitor = new FileReader();
 
-      leitor.onload = function(e) {
-        const conteudoOriginal = e.target.result;
-        const conteudo = normalizar(conteudoOriginal);
-        conteudoDiv.textContent = conteudoOriginal;
+        leitor.onload = function(e) {
+          const conteudoOriginal = e.target.result;
+          const conteudo = normalizar(conteudoOriginal);
+          const encontradas = palavrasSuspeitas.filter(p => conteudo.includes(p));
+          const risco = encontradas.length === 0 ? "Baixo" :
+                        encontradas.length <= 2 ? "Médio" : "Alto";
 
-        const encontradas = palavrasSuspeitas.filter(palavra => conteudo.includes(palavra));
+          const resultado = document.createElement("div");
+          resultado.className = "card";
+          resultado.innerHTML = `<strong>${arquivo.name}</strong><br>
+            Palavras suspeitas: ${encontradas.join(', ') || 'Nenhuma'}<br>
+            Risco: <span class="${risco === 'Baixo' ? 'safe' : 'danger'}">${risco}</span>`;
 
-        if (encontradas.length > 0) {
-          resultado.innerHTML = `<p class='danger'>Atenção! Palavras suspeitas detectadas: <strong>${encontradas.join(', ')}</strong></p>`;
-        } else {
-          resultado.innerHTML = "<p class='safe'>Nenhuma ameaça detectada.</p>";
-        }
-      };
+          resultados.appendChild(resultado);
+          salvarNoHistorico(arquivo.name, encontradas, risco);
+          mostrarHistorico();
+        };
 
-      leitor.readAsText(arquivo);
+        leitor.readAsText(arquivo);
+      });
     }
+
+    function salvarNoHistorico(nomeArquivo, palavrasEncontradas, risco) {
+      const historico = JSON.parse(localStorage.getItem("historico")) || [];
+      historico.push({
+        nome: nomeArquivo,
+        data: new Date().toLocaleString(),
+        palavras: palavrasEncontradas,
+        risco
+      });
+      localStorage.setItem("historico", JSON.stringify(historico));
+    }
+
+    function mostrarHistorico() {
+      const lista = document.getElementById("listaHistorico");
+      const historico = JSON.parse(localStorage.getItem("historico")) || [];
+      lista.innerHTML = "";
+
+      historico.slice().reverse().forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${item.nome}</strong> - ${item.data}<br>
+          Risco: <span class="${item.risco === 'Baixo' ? 'safe' : 'danger'}">${item.risco}</span><br>
+          Palavras: ${item.palavras.join(', ') || 'Nenhuma'}`;
+        lista.appendChild(li);
+      });
+    }
+
+    function limparHistorico() {
+      localStorage.removeItem("historico");
+      mostrarHistorico();
+    }
+
+    // Mostrar histórico ao carregar
+    window.onload = mostrarHistorico;
   </script>
 
 </body>
