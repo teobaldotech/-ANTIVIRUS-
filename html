@@ -4,22 +4,29 @@
   <meta charset="UTF-8">
   <title>Antivírus Simples</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
-    h1 { color: #333; }
-    .safe { color: green; }
-    .danger { color: red; }
-    .card { background: #fff; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; }
-    #historico { margin-top: 30px; }
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+    h1, h2, h3 { color: #333; }
+    input, button { margin: 5px 0; padding: 8px; }
+    .safe { color: green; font-weight: bold; }
+    .danger { color: red; font-weight: bold; }
+    .card, li { background: #fff; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; }
     ul { list-style: none; padding: 0; }
-    li { background: #fff; padding: 10px; margin-bottom: 5px; border: 1px solid #ccc; }
+    #listaPalavras li:hover { background: #eee; cursor: pointer; }
+    #resultados, #historico, #listaPalavras { margin-top: 20px; }
   </style>
 </head>
 <body>
 
   <h1>🛡️ Antivírus Simples</h1>
-  <p>Selecione arquivos de texto para escanear:</p>
+  
+  <p>📂 Selecione arquivos de texto para escanear:</p>
   <input type="file" id="fileInput" accept=".txt" multiple>
   <button onclick="escanearArquivos()">Escanear</button>
+
+  <h2>⚠️ Palavras Suspeitas Personalizadas</h2>
+  <input type="text" id="novaPalavra" placeholder="Adicionar palavra (ex: spyware)">
+  <button onclick="adicionarPalavra()">Adicionar</button>
+  <ul id="listaPalavras"></ul>
 
   <h2>🔍 Resultados:</h2>
   <div id="resultados"></div>
@@ -31,10 +38,51 @@
   </div>
 
   <script>
-    const palavrasSuspeitas = ["virus", "trojan", "malware", "worm", "hacker"];
-
+    // Utilidades
     function normalizar(texto) {
       return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    function obterPalavrasSuspeitas() {
+      return JSON.parse(localStorage.getItem("palavrasSuspeitas")) || ["virus", "trojan", "malware", "worm", "hacker"];
+    }
+
+    function salvarPalavrasSuspeitas(palavras) {
+      localStorage.setItem("palavrasSuspeitas", JSON.stringify(palavras));
+    }
+
+    function adicionarPalavra() {
+      const input = document.getElementById("novaPalavra");
+      const palavra = input.value.trim().toLowerCase();
+      if (!palavra) return;
+
+      let palavras = obterPalavrasSuspeitas();
+      if (!palavras.includes(palavra)) {
+        palavras.push(palavra);
+        salvarPalavrasSuspeitas(palavras);
+        mostrarListaPalavras();
+        input.value = "";
+      }
+    }
+
+    function mostrarListaPalavras() {
+      const lista = document.getElementById("listaPalavras");
+      const palavras = obterPalavrasSuspeitas();
+      lista.innerHTML = "";
+
+      palavras.forEach(palavra => {
+        const li = document.createElement("li");
+        li.textContent = palavra;
+        li.title = "Clique para remover";
+        li.onclick = () => {
+          if (confirm(`Remover "${palavra}" da lista negra?`)) {
+            const novaLista = palavras.filter(p => p !== palavra);
+            salvarPalavrasSuspeitas(novaLista);
+            mostrarListaPalavras();
+          }
+        };
+        lista.appendChild(li);
+      });
     }
 
     function escanearArquivos() {
@@ -47,24 +95,34 @@
         return;
       }
 
+      const palavrasSuspeitas = obterPalavrasSuspeitas();
+
       Array.from(input.files).forEach(arquivo => {
         const leitor = new FileReader();
 
         leitor.onload = function(e) {
           const conteudoOriginal = e.target.result;
           const conteudo = normalizar(conteudoOriginal);
+
           const encontradas = palavrasSuspeitas.filter(p => conteudo.includes(p));
-          const risco = encontradas.length === 0 ? "Baixo" :
-                        encontradas.length <= 2 ? "Médio" : "Alto";
+          const urlsEncontradas = (conteudoOriginal.match(/https?:\/\/[^\s]+/g) || []);
+          
+          const risco = (encontradas.length + urlsEncontradas.length) === 0
+            ? "Baixo"
+            : (encontradas.length + urlsEncontradas.length) <= 3
+              ? "Médio" : "Alto";
 
           const resultado = document.createElement("div");
           resultado.className = "card";
-          resultado.innerHTML = `<strong>${arquivo.name}</strong><br>
+          resultado.innerHTML = `
+            <strong>${arquivo.name}</strong><br>
             Palavras suspeitas: ${encontradas.join(', ') || 'Nenhuma'}<br>
-            Risco: <span class="${risco === 'Baixo' ? 'safe' : 'danger'}">${risco}</span>`;
+            URLs encontradas: ${urlsEncontradas.length}<br>
+            Risco: <span class="${risco === 'Baixo' ? 'safe' : 'danger'}">${risco}</span>
+          `;
 
           resultados.appendChild(resultado);
-          salvarNoHistorico(arquivo.name, encontradas, risco);
+          salvarNoHistorico(arquivo.name, encontradas, urlsEncontradas, risco);
           mostrarHistorico();
         };
 
@@ -72,12 +130,13 @@
       });
     }
 
-    function salvarNoHistorico(nomeArquivo, palavrasEncontradas, risco) {
+    function salvarNoHistorico(nomeArquivo, palavras, urls, risco) {
       const historico = JSON.parse(localStorage.getItem("historico")) || [];
       historico.push({
         nome: nomeArquivo,
         data: new Date().toLocaleString(),
-        palavras: palavrasEncontradas,
+        palavras,
+        urls,
         risco
       });
       localStorage.setItem("historico", JSON.stringify(historico));
@@ -90,9 +149,12 @@
 
       historico.slice().reverse().forEach(item => {
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${item.nome}</strong> - ${item.data}<br>
+        li.innerHTML = `
+          <strong>${item.nome}</strong> - ${item.data}<br>
           Risco: <span class="${item.risco === 'Baixo' ? 'safe' : 'danger'}">${item.risco}</span><br>
-          Palavras: ${item.palavras.join(', ') || 'Nenhuma'}`;
+          Palavras: ${item.palavras.join(', ') || 'Nenhuma'}<br>
+          URLs: ${item.urls.length}
+        `;
         lista.appendChild(li);
       });
     }
@@ -102,8 +164,11 @@
       mostrarHistorico();
     }
 
-    // Mostrar histórico ao carregar
-    window.onload = mostrarHistorico;
+    // Inicialização
+    window.onload = () => {
+      mostrarListaPalavras();
+      mostrarHistorico();
+    };
   </script>
 
 </body>
