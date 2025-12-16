@@ -18,14 +18,14 @@
 <body>
 
   <h1>🛡️ Antivírus Simples</h1>
-  
+
   <p>📂 Selecione arquivos de texto para escanear:</p>
   <input type="file" id="fileInput" accept=".txt" multiple>
-  <button onclick="escanearArquivos()">Escanear</button>
+  <button id="btnEscanear">Escanear</button>
 
   <h2>⚠️ Palavras Suspeitas Personalizadas</h2>
   <input type="text" id="novaPalavra" placeholder="Adicionar palavra (ex: spyware)">
-  <button onclick="adicionarPalavra()">Adicionar</button>
+  <button id="btnAdicionarPalavra">Adicionar</button>
   <ul id="listaPalavras"></ul>
 
   <h2>🔍 Resultados:</h2>
@@ -34,141 +34,156 @@
   <div id="historico">
     <h3>🗂️ Histórico de Escaneamentos</h3>
     <ul id="listaHistorico"></ul>
-    <button onclick="limparHistorico()">🧹 Limpar Histórico</button>
+    <button id="btnLimparHistorico">🧹 Limpar Histórico</button>
   </div>
 
   <script>
+    // -----------------------------
     // Utilidades
-    function normalizar(texto) {
-      return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    }
+    // -----------------------------
+    const normalizar = texto =>
+      texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    function obterPalavrasSuspeitas() {
-      return JSON.parse(localStorage.getItem("palavrasSuspeitas")) || ["virus", "trojan", "malware", "worm", "hacker"];
-    }
+    const obterPalavrasSuspeitas = () =>
+      JSON.parse(localStorage.getItem("palavrasSuspeitas")) ||
+      ["virus", "trojan", "malware", "worm", "hacker"];
 
-    function salvarPalavrasSuspeitas(palavras) {
+    const salvarPalavrasSuspeitas = palavras =>
       localStorage.setItem("palavrasSuspeitas", JSON.stringify(palavras));
-    }
 
-    function adicionarPalavra() {
-      const input = document.getElementById("novaPalavra");
+    // -----------------------------
+    // Palavras suspeitas
+    // -----------------------------
+    const adicionarPalavra = () => {
+      const input = document.querySelector("#novaPalavra");
       const palavra = input.value.trim().toLowerCase();
       if (!palavra) return;
 
-      let palavras = obterPalavrasSuspeitas();
+      const palavras = obterPalavrasSuspeitas();
       if (!palavras.includes(palavra)) {
-        palavras.push(palavra);
-        salvarPalavrasSuspeitas(palavras);
+        salvarPalavrasSuspeitas([...palavras, palavra]);
         mostrarListaPalavras();
         input.value = "";
       }
-    }
+    };
 
-    function mostrarListaPalavras() {
-      const lista = document.getElementById("listaPalavras");
+    const mostrarListaPalavras = () => {
+      const lista = document.querySelector("#listaPalavras");
       const palavras = obterPalavrasSuspeitas();
-      lista.innerHTML = "";
 
-      palavras.forEach(palavra => {
-        const li = document.createElement("li");
-        li.textContent = palavra;
-        li.title = "Clique para remover";
-        li.onclick = () => {
-          if (confirm(`Remover "${palavra}" da lista negra?`)) {
-            const novaLista = palavras.filter(p => p !== palavra);
-            salvarPalavrasSuspeitas(novaLista);
-            mostrarListaPalavras();
-          }
-        };
-        lista.appendChild(li);
-      });
-    }
+      lista.innerHTML = palavras
+        .map(p => `<li data-palavra="${p}" title="Clique para remover">${p}</li>`)
+        .join("");
+    };
 
-    function escanearArquivos() {
-      const input = document.getElementById('fileInput');
-      const resultados = document.getElementById('resultados');
+    document.querySelector("#listaPalavras").addEventListener("click", e => {
+      if (e.target.tagName !== "LI") return;
+
+      const palavra = e.target.dataset.palavra;
+      if (confirm(`Remover "${palavra}" da lista negra?`)) {
+        const novas = obterPalavrasSuspeitas().filter(p => p !== palavra);
+        salvarPalavrasSuspeitas(novas);
+        mostrarListaPalavras();
+      }
+    });
+
+    // -----------------------------
+    // Escaneamento de arquivos
+    // -----------------------------
+    const escanearArquivos = () => {
+      const input = document.querySelector("#fileInput");
+      const resultados = document.querySelector("#resultados");
       resultados.innerHTML = "";
 
       if (!input.files.length) {
-        resultados.innerHTML = "<p class='danger'>Nenhum arquivo selecionado.</p>";
+        resultados.innerHTML = `<p class="danger">Nenhum arquivo selecionado.</p>`;
         return;
       }
 
       const palavrasSuspeitas = obterPalavrasSuspeitas();
 
-      Array.from(input.files).forEach(arquivo => {
+      [...input.files].forEach(arquivo => {
         const leitor = new FileReader();
 
-        leitor.onload = function(e) {
+        leitor.onload = e => {
           const conteudoOriginal = e.target.result;
           const conteudo = normalizar(conteudoOriginal);
 
           const encontradas = palavrasSuspeitas.filter(p => conteudo.includes(p));
-          const urlsEncontradas = (conteudoOriginal.match(/https?:\/\/[^\s]+/g) || []);
-          
-          const risco = (encontradas.length + urlsEncontradas.length) === 0
-            ? "Baixo"
-            : (encontradas.length + urlsEncontradas.length) <= 3
-              ? "Médio" : "Alto";
+          const urlsEncontradas = conteudoOriginal.match(/https?:\/\/[^\s]+/g) || [];
 
-          const resultado = document.createElement("div");
-          resultado.className = "card";
-          resultado.innerHTML = `
-            <strong>${arquivo.name}</strong><br>
-            Palavras suspeitas: ${encontradas.join(', ') || 'Nenhuma'}<br>
-            URLs encontradas: ${urlsEncontradas.length}<br>
-            Risco: <span class="${risco === 'Baixo' ? 'safe' : 'danger'}">${risco}</span>
+          const total = encontradas.length + urlsEncontradas.length;
+          const risco = total === 0 ? "Baixo" : total <= 3 ? "Médio" : "Alto";
+
+          resultados.innerHTML += `
+            <div class="card">
+              <strong>${arquivo.name}</strong><br>
+              Palavras suspeitas: ${encontradas.join(", ") || "Nenhuma"}<br>
+              URLs encontradas: ${urlsEncontradas.length}<br>
+              Risco: <span class="${risco === "Baixo" ? "safe" : "danger"}">${risco}</span>
+            </div>
           `;
 
-          resultados.appendChild(resultado);
           salvarNoHistorico(arquivo.name, encontradas, urlsEncontradas, risco);
           mostrarHistorico();
         };
 
         leitor.readAsText(arquivo);
       });
-    }
+    };
 
-    function salvarNoHistorico(nomeArquivo, palavras, urls, risco) {
+    // -----------------------------
+    // Histórico
+    // -----------------------------
+    const salvarNoHistorico = (nome, palavras, urls, risco) => {
       const historico = JSON.parse(localStorage.getItem("historico")) || [];
       historico.push({
-        nome: nomeArquivo,
+        nome,
         data: new Date().toLocaleString(),
         palavras,
         urls,
         risco
       });
       localStorage.setItem("historico", JSON.stringify(historico));
-    }
+    };
 
-    function mostrarHistorico() {
-      const lista = document.getElementById("listaHistorico");
+    const mostrarHistorico = () => {
+      const lista = document.querySelector("#listaHistorico");
       const historico = JSON.parse(localStorage.getItem("historico")) || [];
-      lista.innerHTML = "";
 
-      historico.slice().reverse().forEach(item => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <strong>${item.nome}</strong> - ${item.data}<br>
-          Risco: <span class="${item.risco === 'Baixo' ? 'safe' : 'danger'}">${item.risco}</span><br>
-          Palavras: ${item.palavras.join(', ') || 'Nenhuma'}<br>
-          URLs: ${item.urls.length}
-        `;
-        lista.appendChild(li);
-      });
-    }
+      lista.innerHTML = historico
+        .slice()
+        .reverse()
+        .map(item => `
+          <li>
+            <strong>${item.nome}</strong> - ${item.data}<br>
+            Risco: <span class="${item.risco === "Baixo" ? "safe" : "danger"}">${item.risco}</span><br>
+            Palavras: ${item.palavras.join(", ") || "Nenhuma"}<br>
+            URLs: ${item.urls.length}
+          </li>
+        `)
+        .join("");
+    };
 
-    function limparHistorico() {
+    const limparHistorico = () => {
       localStorage.removeItem("historico");
       mostrarHistorico();
-    }
+    };
 
+    // -----------------------------
+    // Eventos
+    // -----------------------------
+    document.querySelector("#btnAdicionarPalavra").addEventListener("click", adicionarPalavra);
+    document.querySelector("#btnEscanear").addEventListener("click", escanearArquivos);
+    document.querySelector("#btnLimparHistorico").addEventListener("click", limparHistorico);
+
+    // -----------------------------
     // Inicialização
-    window.onload = () => {
+    // -----------------------------
+    window.addEventListener("DOMContentLoaded", () => {
       mostrarListaPalavras();
       mostrarHistorico();
-    };
+    });
   </script>
 
 </body>
