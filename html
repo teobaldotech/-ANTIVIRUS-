@@ -9,30 +9,46 @@
       font-family: Arial, sans-serif;
       background-color: transparent;
       padding: 20px;
-      color: #fff;
+      color: #e0ffe0;
     }
 
-    h1, h2, h3 { color: #fff; }
+    h1, h2, h3 { color: #e0ffe0; }
 
     input, button {
       margin: 5px 0;
-      padding: 8px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #00ff66;
+      background: rgba(0, 0, 0, 0.7);
+      color: #e0ffe0;
     }
 
-    .safe { color: #00ff00; font-weight: bold; }
-    .danger { color: #ff4444; font-weight: bold; }
+    button {
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: #00ff66;
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    .safe { color: #00ff66; font-weight: bold; }
+    .danger { color: #ff5555; font-weight: bold; }
 
     .card, li {
-      background: rgba(0,0,0,0.4);
+      background: rgba(0, 0, 0, 0.6);
       padding: 10px;
       margin-bottom: 10px;
-      border: 1px solid #444;
+      border: 1px solid #00aa44;
+      border-radius: 4px;
     }
 
     ul { list-style: none; padding: 0; }
 
     #listaPalavras li:hover {
-      background: rgba(255,255,255,0.1);
+      background: rgba(0, 255, 100, 0.1);
       cursor: pointer;
     }
 
@@ -40,7 +56,7 @@
       margin-top: 20px;
     }
 
-    /* Canvas do fundo de fumaça */
+    /* Canvas do fundo 3D */
     #bg {
       position: fixed;
       top: 0;
@@ -76,92 +92,142 @@
     <button id="btnLimparHistorico">🧹 Limpar Histórico</button>
   </div>
 
-  <!-- Fundo animado: fumaça volumétrica em canvas 2D -->
+  <!-- Three.js para o fundo 3D -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Fundo 3D: rede neural Verde Hacker / Matrix -->
   <script>
-    const canvasBg = document.getElementById("bg");
-    const ctx = canvasBg.getContext("2d");
+    const canvas = document.getElementById("bg");
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    canvasBg.width = width;
-    canvasBg.height = height;
-
-    window.addEventListener("resize", () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvasBg.width = width;
-      canvasBg.height = height;
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true
     });
 
-    class SmokeParticle {
-      constructor() {
-        this.reset();
-      }
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio || 1);
+    camera.position.z = 14;
 
-      reset() {
-        this.x = Math.random() * width;
-        this.y = height + Math.random() * 100;
-        this.radius = 20 + Math.random() * 60;
-        this.alpha = 0.05 + Math.random() * 0.1;
-        this.speedY = 0.2 + Math.random() * 0.5;
-        this.expansion = 0.02 + Math.random() * 0.04;
-        this.wind = (Math.random() - 0.5) * 0.2;
-        this.gray = 150 + Math.floor(Math.random() * 80); // tons de cinza
-      }
+    // Fundo bem escuro, estilo Matrix
+    scene.background = new THREE.Color(0x010401);
 
-      update() {
-        this.y -= this.speedY;
-        this.x += this.wind;
-        this.radius += this.expansion;
-        this.alpha -= 0.0007;
+    // Grupo da rede
+    const networkGroup = new THREE.Group();
+    scene.add(networkGroup);
 
-        if (this.alpha <= 0 || this.y + this.radius < -50) {
-          this.reset();
-        }
-      }
+    const nodeCount = 90;
+    const nodes = [];
+    const nodeGeometry = new THREE.SphereGeometry(0.08, 12, 12);
+    const baseNodeColor = new THREE.Color(0x00ff66); // verde neon
+    const baseLineColor = new THREE.Color(0x00aa44); // verde mais escuro
 
-      draw(ctx) {
-        const grd = ctx.createRadialGradient(
-          this.x, this.y, this.radius * 0.1,
-          this.x, this.y, this.radius
-        );
-        grd.addColorStop(0, `rgba(${this.gray}, ${this.gray}, ${this.gray}, ${this.alpha * 2})`);
-        grd.addColorStop(1, `rgba(10, 10, 10, 0)`);
-
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    const smokeParticles = [];
-    const PARTICLE_COUNT = 70;
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      smokeParticles.push(new SmokeParticle());
-    }
-
-    function animateSmoke() {
-      ctx.clearRect(0, 0, width, height);
-
-      // Fundo levemente escuro, não totalmente opaco
-      const bgGradient = ctx.createLinearGradient(0, 0, 0, height);
-      bgGradient.addColorStop(0, "rgba(5, 5, 10, 0.98)");
-      bgGradient.addColorStop(1, "rgba(0, 0, 0, 0.98)");
-      ctx.fillStyle = bgGradient;
-      ctx.fillRect(0, 0, width, height);
-
-      // Desenhar fumaça
-      smokeParticles.forEach(p => {
-        p.update();
-        p.draw(ctx);
+    // Criar nós
+    for (let i = 0; i < nodeCount; i++) {
+      const nodeMaterial = new THREE.MeshBasicMaterial({
+        color: baseNodeColor.clone().offsetHSL((Math.random() - 0.5) * 0.05, 0.1, 0.05)
       });
 
-      requestAnimationFrame(animateSmoke);
+      const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+
+      const radius = 5 * Math.cbrt(Math.random());
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+
+      node.position.set(
+        radius * Math.sin(phi) * Math.cos(theta),
+        radius * Math.sin(phi) * Math.sin(theta),
+        radius * Math.cos(phi)
+      );
+
+      nodes.push(node);
+      networkGroup.add(node);
     }
 
-    animateSmoke();
+    // Linhas da rede
+    const maxConnections = 4;
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: baseLineColor,
+      transparent: true,
+      opacity: 0.45
+    });
+
+    const lineGeometry = new THREE.BufferGeometry();
+    const positions = [];
+
+    for (let i = 0; i < nodeCount; i++) {
+      const nodeA = nodes[i];
+      const distances = [];
+
+      for (let j = 0; j < nodeCount; j++) {
+        if (i === j) continue;
+        const nodeB = nodes[j];
+        const dist = nodeA.position.distanceTo(nodeB.position);
+        distances.push({ index: j, dist });
+      }
+
+      distances.sort((a, b) => a.dist - b.dist);
+
+      for (let k = 0; k < maxConnections; k++) {
+        const idx = distances[k].index;
+        const nodeB = nodes[idx];
+
+        positions.push(
+          nodeA.position.x, nodeA.position.y, nodeA.position.z,
+          nodeB.position.x, nodeB.position.y, nodeB.position.z
+        );
+      }
+    }
+
+    lineGeometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3)
+    );
+
+    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+    networkGroup.add(lines);
+
+    // Luzes suaves
+    const ambient = new THREE.AmbientLight(0x00ff66, 0.4);
+    const point1 = new THREE.PointLight(0x00ff99, 0.8, 50);
+    point1.position.set(8, 8, 10);
+    const point2 = new THREE.PointLight(0x00ff33, 0.6, 40);
+    point2.position.set(-8, -5, -10);
+    scene.add(ambient, point1, point2);
+
+    // Animação
+    let time = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+
+      time += 0.002;
+
+      networkGroup.rotation.y += 0.0018;
+      networkGroup.rotation.x = Math.sin(time * 0.4) * 0.12;
+
+      nodes.forEach((node, i) => {
+        const pulsar = 0.6 + Math.sin(time * 5 + i) * 0.3;
+        node.scale.setScalar(pulsar);
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
   </script>
 
   <!-- Lógica do antivírus -->
