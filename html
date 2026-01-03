@@ -1,366 +1,208 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Antivírus Simples</title>
+<meta charset="UTF-8">
+<title>NeonAV - Antivírus Web</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: transparent;
-      padding: 20px;
-      color: #e0ffe0;
-    }
-
-    h1, h2, h3 { color: #e0ffe0; }
-
-    input, button {
-      margin: 5px 0;
-      padding: 8px 10px;
-      border-radius: 4px;
-      border: 1px solid #00ff66;
-      background: rgba(0, 0, 0, 0.7);
-      color: #e0ffe0;
-    }
-
-    button {
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-
-    button:hover {
-      background: #00ff66;
-      color: #000;
-      transform: translateY(-1px);
-    }
-
-    .safe { color: #00ff66; font-weight: bold; }
-    .danger { color: #ff5555; font-weight: bold; }
-
-    .card, li {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #00aa44;
-      border-radius: 4px;
-    }
-
-    ul { list-style: none; padding: 0; }
-
-    #listaPalavras li:hover {
-      background: rgba(0, 255, 100, 0.1);
-      cursor: pointer;
-    }
-
-    #resultados, #historico, #listaPalavras {
-      margin-top: 20px;
-    }
-
-    /* Canvas do fundo 3D */
-    #bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-  </style>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: transparent;
+  color: #e0ffe0;
+  padding: 20px;
+}
+h1,h2,h3 { color:#00ff88 }
+input,button {
+  background: rgba(0,0,0,.7);
+  color:#e0ffe0;
+  border:1px solid #00ff66;
+  padding:8px;
+  border-radius:4px;
+  margin:5px 0;
+}
+button:hover {
+  background:#00ff66;
+  color:#000;
+  cursor:pointer;
+}
+.card,li {
+  background: rgba(0,0,0,.6);
+  border:1px solid #00aa44;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:4px;
+}
+.safe {color:#00ff66;font-weight:bold}
+.danger {color:#ff5555;font-weight:bold}
+.critical {color:#ff2222;font-weight:bold}
+ul{list-style:none;padding:0}
+#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
+</style>
 </head>
 
 <body>
 
-  <canvas id="bg"></canvas>
+<canvas id="bg"></canvas>
 
-  <h1>🛡️ Antivírus Simples</h1>
+<h1>🛡️ NeonAV – Antivírus Web</h1>
 
-  <p>📂 Selecione arquivos de texto para escanear:</p>
-  <input type="file" id="fileInput" accept=".txt" multiple>
-  <button id="btnEscanear">Escanear</button>
+<input type="file" id="fileInput" multiple
+accept=".txt,.log,.csv,.json,.html,.js">
+<button onclick="scan()">Escanear</button>
 
-  <h2>⚠️ Palavras Suspeitas Personalizadas</h2>
-  <input type="text" id="novaPalavra" placeholder="Adicionar palavra (ex: spyware)">
-  <button id="btnAdicionarPalavra">Adicionar</button>
-  <ul id="listaPalavras"></ul>
+<h2>⚠️ Palavras Suspeitas</h2>
+<input id="novaPalavra" placeholder="ex: spyware">
+<button onclick="addWord()">Adicionar</button>
+<ul id="listaPalavras"></ul>
 
-  <h2>🔍 Resultados:</h2>
-  <div id="resultados"></div>
+<h2>📊 Estatísticas</h2>
+<div id="stats" class="card"></div>
 
-  <div id="historico">
-    <h3>🗂️ Histórico de Escaneamentos</h3>
-    <ul id="listaHistorico"></ul>
-    <button id="btnLimparHistorico">🧹 Limpar Histórico</button>
-  </div>
+<h2>🔍 Resultados</h2>
+<div id="resultados"></div>
 
-  <!-- Three.js para o fundo 3D -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<h2>🗂️ Histórico</h2>
+<ul id="historico"></ul>
+<button onclick="clearHistory()">Limpar Histórico</button>
 
-  <!-- Fundo 3D: rede neural Verde Hacker / Matrix -->
-  <script>
-    const canvas = document.getElementById("bg");
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      60,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true
-    });
+<script>
+// ================= FUNDO 3D =================
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,1000);
+camera.position.z=14;
+const renderer=new THREE.WebGLRenderer({canvas:bg,alpha:true});
+renderer.setSize(innerWidth,innerHeight);
+scene.background=new THREE.Color(0x010401);
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio || 1);
-    camera.position.z = 14;
+const group=new THREE.Group();scene.add(group);
+const nodes=[];
+for(let i=0;i<80;i++){
+  const m=new THREE.Mesh(
+    new THREE.SphereGeometry(.08,12,12),
+    new THREE.MeshBasicMaterial({color:0x00ff66})
+  );
+  m.position.set(
+    (Math.random()-.5)*10,
+    (Math.random()-.5)*10,
+    (Math.random()-.5)*10
+  );
+  nodes.push(m);group.add(m);
+}
+function anim(){
+  requestAnimationFrame(anim);
+  group.rotation.y+=.002;
+  renderer.render(scene,camera);
+}
+anim();
+addEventListener("resize",()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
 
-    // Fundo bem escuro, estilo Matrix
-    scene.background = new THREE.Color(0x010401);
+// ================= ANTIVÍRUS =================
+const normalize=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 
-    // Grupo da rede
-    const networkGroup = new THREE.Group();
-    scene.add(networkGroup);
+const defaultWords=["virus","trojan","malware","worm","spyware"];
+const badDomains=["bit.ly","tinyurl",".ru",".cn",".exe"];
+const badCode=["eval(","atob(","document.write","new Function"];
 
-    const nodeCount = 90;
-    const nodes = [];
-    const nodeGeometry = new THREE.SphereGeometry(0.08, 12, 12);
-    const baseNodeColor = new THREE.Color(0x00ff66); // verde neon
-    const baseLineColor = new THREE.Color(0x00aa44); // verde mais escuro
+const getWords=()=>JSON.parse(localStorage.getItem("words"))||defaultWords;
+const saveWords=w=>localStorage.setItem("words",JSON.stringify(w));
 
-    // Criar nós
-    for (let i = 0; i < nodeCount; i++) {
-      const nodeMaterial = new THREE.MeshBasicMaterial({
-        color: baseNodeColor.clone().offsetHSL((Math.random() - 0.5) * 0.05, 0.1, 0.05)
+function addWord(){
+  const v=normalize(novaPalavra.value.trim());
+  if(!v)return;
+  const w=getWords();
+  if(!w.includes(v)){w.push(v);saveWords(w);}
+  novaPalavra.value="";
+  renderWords();
+}
+
+function renderWords(){
+  listaPalavras.innerHTML=getWords()
+  .map(w=>`<li onclick="removeWord('${w}')">${w}</li>`).join("");
+}
+function removeWord(w){
+  if(confirm("Remover "+w+"?")){
+    saveWords(getWords().filter(x=>x!==w));
+    renderWords();
+  }
+}
+
+function scan(){
+  resultados.innerHTML="";
+  [...fileInput.files].forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      const raw=e.target.result;
+      const text=normalize(raw);
+      let score=0;
+
+      const found=getWords().filter(p=>{
+        const re=new RegExp(`\\b${p}\\b`,"i");
+        return re.test(text);
       });
+      score+=found.length*2;
 
-      const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+      const urls=raw.match(/https?:\/\/\S+/g)||[];
+      const badUrls=urls.filter(u=>badDomains.some(d=>u.includes(d)));
+      score+=badUrls.length*3;
 
-      const radius = 5 * Math.cbrt(Math.random());
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
+      const codeHits=badCode.filter(c=>raw.includes(c));
+      score+=codeHits.length*4;
 
-      node.position.set(
-        radius * Math.sin(phi) * Math.cos(theta),
-        radius * Math.sin(phi) * Math.sin(theta),
-        radius * Math.cos(phi)
-      );
+      const risk=score==0?"Baixo":score<=3?"Médio":score<=7?"Alto":"Crítico";
 
-      nodes.push(node);
-      networkGroup.add(node);
-    }
+      resultados.innerHTML+=`
+      <div class="card">
+        <b>${f.name}</b><br>
+        Palavras: ${found.join(", ")||"Nenhuma"}<br>
+        URLs suspeitas: ${badUrls.length}<br>
+        Código perigoso: ${codeHits.length}<br>
+        Risco: <span class="${risk=="Baixo"?"safe":risk=="Crítico"?"critical":"danger"}">${risk}</span>
+      </div>`;
 
-    // Linhas da rede
-    const maxConnections = 4;
-    const lineMaterial = new THREE.LineBasicMaterial({
-      color: baseLineColor,
-      transparent: true,
-      opacity: 0.45
-    });
-
-    const lineGeometry = new THREE.BufferGeometry();
-    const positions = [];
-
-    for (let i = 0; i < nodeCount; i++) {
-      const nodeA = nodes[i];
-      const distances = [];
-
-      for (let j = 0; j < nodeCount; j++) {
-        if (i === j) continue;
-        const nodeB = nodes[j];
-        const dist = nodeA.position.distanceTo(nodeB.position);
-        distances.push({ index: j, dist });
-      }
-
-      distances.sort((a, b) => a.dist - b.dist);
-
-      for (let k = 0; k < maxConnections; k++) {
-        const idx = distances[k].index;
-        const nodeB = nodes[idx];
-
-        positions.push(
-          nodeA.position.x, nodeA.position.y, nodeA.position.z,
-          nodeB.position.x, nodeB.position.y, nodeB.position.z
-        );
-      }
-    }
-
-    lineGeometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(positions, 3)
-    );
-
-    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-    networkGroup.add(lines);
-
-    // Luzes suaves
-    const ambient = new THREE.AmbientLight(0x00ff66, 0.4);
-    const point1 = new THREE.PointLight(0x00ff99, 0.8, 50);
-    point1.position.set(8, 8, 10);
-    const point2 = new THREE.PointLight(0x00ff33, 0.6, 40);
-    point2.position.set(-8, -5, -10);
-    scene.add(ambient, point1, point2);
-
-    // Animação
-    let time = 0;
-    function animate() {
-      requestAnimationFrame(animate);
-
-      time += 0.002;
-
-      networkGroup.rotation.y += 0.0018;
-      networkGroup.rotation.x = Math.sin(time * 0.4) * 0.12;
-
-      nodes.forEach((node, i) => {
-        const pulsar = 0.6 + Math.sin(time * 5 + i) * 0.3;
-        node.scale.setScalar(pulsar);
-      });
-
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    // Resize
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-  </script>
-
-  <!-- Lógica do antivírus -->
-  <script>
-    const normalizar = texto =>
-      texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-    const obterPalavrasSuspeitas = () =>
-      JSON.parse(localStorage.getItem("palavrasSuspeitas")) ||
-      ["virus", "trojan", "malware", "worm", "hacker"];
-
-    const salvarPalavrasSuspeitas = palavras =>
-      localStorage.setItem("palavrasSuspeitas", JSON.stringify(palavras));
-
-    const adicionarPalavra = () => {
-      const input = document.querySelector("#novaPalavra");
-      const palavra = input.value.trim().toLowerCase();
-      if (!palavra) return;
-
-      const palavras = obterPalavrasSuspeitas();
-      if (!palavras.includes(palavra)) {
-        salvarPalavrasSuspeitas([...palavras, palavra]);
-        mostrarListaPalavras();
-        input.value = "";
-      }
+      saveHistory(f.name,risk);
+      renderStats();
+      renderHistory();
     };
+    r.readAsText(f);
+  });
+}
 
-    const mostrarListaPalavras = () => {
-      const lista = document.querySelector("#listaPalavras");
-      const palavras = obterPalavrasSuspeitas();
+function saveHistory(name,risk){
+  const h=JSON.parse(localStorage.getItem("history"))||[];
+  h.push({name,risk,date:new Date().toLocaleString()});
+  if(h.length>50)h.shift();
+  localStorage.setItem("history",JSON.stringify(h));
+}
 
-      lista.innerHTML = palavras
-        .map(p => `<li data-palavra="${p}" title="Clique para remover">${p}</li>`)
-        .join("");
-    };
+function renderHistory(){
+  const h=JSON.parse(localStorage.getItem("history"))||[];
+  historico.innerHTML=h.slice().reverse().map(i=>`
+    <li>${i.name} - ${i.date} - 
+    <span class="${i.risk=="Baixo"?"safe":i.risk=="Crítico"?"critical":"danger"}">${i.risk}</span>
+    </li>`).join("");
+}
 
-    document.querySelector("#listaPalavras").addEventListener("click", e => {
-      if (e.target.tagName !== "LI") return;
+function renderStats(){
+  const h=JSON.parse(localStorage.getItem("history"))||[];
+  stats.innerHTML=`
+    Arquivos escaneados: ${h.length}<br>
+    Críticos: ${h.filter(x=>x.risk=="Crítico").length}
+  `;
+}
 
-      const palavra = e.target.dataset.palavra;
-      if (confirm(`Remover "${palavra}" da lista negra?`)) {
-        const novas = obterPalavrasSuspeitas().filter(p => p !== palavra);
-        salvarPalavrasSuspeitas(novas);
-        mostrarListaPalavras();
-      }
-    });
+function clearHistory(){
+  localStorage.removeItem("history");
+  renderHistory();renderStats();
+}
 
-    const escanearArquivos = () => {
-      const input = document.querySelector("#fileInput");
-      const resultados = document.querySelector("#resultados");
-      resultados.innerHTML = "";
-
-      if (!input.files.length) {
-        resultados.innerHTML = `<p class="danger">Nenhum arquivo selecionado.</p>`;
-        return;
-      }
-
-      const palavrasSuspeitas = obterPalavrasSuspeitas();
-
-      [...input.files].forEach(arquivo => {
-        const leitor = new FileReader();
-
-        leitor.onload = e => {
-          const conteudoOriginal = e.target.result;
-          const conteudo = normalizar(conteudoOriginal);
-
-          const encontradas = palavrasSuspeitas.filter(p => conteudo.includes(p));
-          const urlsEncontradas = conteudoOriginal.match(/https?:\/\/[^\s]+/g) || [];
-
-          const total = encontradas.length + urlsEncontradas.length;
-          const risco = total === 0 ? "Baixo" : total <= 3 ? "Médio" : "Alto";
-
-          resultados.innerHTML += `
-            <div class="card">
-              <strong>${arquivo.name}</strong><br>
-              Palavras suspeitas: ${encontradas.join(", ") || "Nenhuma"}<br>
-              URLs encontradas: ${urlsEncontradas.length}<br>
-              Risco: <span class="${risco === "Baixo" ? "safe" : "danger"}">${risco}</span>
-            </div>
-          `;
-
-          salvarNoHistorico(arquivo.name, encontradas, urlsEncontradas, risco);
-          mostrarHistorico();
-        };
-
-        leitor.readAsText(arquivo);
-      });
-    };
-
-    const salvarNoHistorico = (nome, palavras, urls, risco) => {
-      const historico = JSON.parse(localStorage.getItem("historico")) || [];
-      historico.push({
-        nome,
-        data: new Date().toLocaleString(),
-        palavras,
-        urls,
-        risco
-      });
-      localStorage.setItem("historico", JSON.stringify(historico));
-    };
-
-    const mostrarHistorico = () => {
-      const lista = document.querySelector("#listaHistorico");
-      const historico = JSON.parse(localStorage.getItem("historico")) || [];
-
-      lista.innerHTML = historico
-        .slice()
-        .reverse()
-        .map(item => `
-          <li>
-            <strong>${item.nome}</strong> - ${item.data}<br>
-            Risco: <span class="${item.risco === "Baixo" ? "safe" : "danger"}">${item.risco}</span><br>
-            Palavras: ${item.palavras.join(", ") || "Nenhuma"}<br>
-            URLs: ${item.urls.length}
-          </li>
-        `)
-        .join("");
-    };
-
-    const limparHistorico = () => {
-      localStorage.removeItem("historico");
-      mostrarHistorico();
-    };
-
-    document.querySelector("#btnAdicionarPalavra").addEventListener("click", adicionarPalavra);
-    document.querySelector("#btnEscanear").addEventListener("click", escanearArquivos);
-    document.querySelector("#btnLimparHistorico").addEventListener("click", limparHistorico);
-
-    window.addEventListener("DOMContentLoaded", () => {
-      mostrarListaPalavras();
-      mostrarHistorico();
-    });
-  </script>
-
+renderWords();renderHistory();renderStats();
+</script>
 </body>
 </html>
