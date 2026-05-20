@@ -1,263 +1,999 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
 <meta charset="UTF-8">
-<title>NeonAV - Antivírus Web Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>🛡️ NeonAV Secure PRO</title>
+
+<!-- CSP -->
+<meta http-equiv="Content-Security-Policy"
+content="
+default-src 'self';
+script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
+style-src 'self' 'unsafe-inline';
+img-src 'self' data:;
+object-src 'none';
+base-uri 'none';
+frame-ancestors 'none';
+form-action 'self';
+upgrade-insecure-requests;
+">
+
 <style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
 body{
-  font-family:Arial;
   background:#010401;
   color:#00ff88;
+  font-family:Arial,sans-serif;
+  overflow-x:hidden;
   padding:20px;
 }
-h1,h2{color:#00ff88}
-input,button{
+
+#bg{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:20px;
+  font-size:2rem;
+  text-shadow:0 0 10px #00ff88;
+}
+
+.panel{
+  background:#000;
+  border:1px solid #00aa55;
+  border-radius:10px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 0 10px #00ff44;
+}
+
+input[type=file]{
+  width:100%;
+  padding:10px;
   background:#000;
   color:#00ff88;
-  border:1px solid #00ff66;
-  padding:8px;
-  margin:5px 0;
-  border-radius:4px;
+  border:1px solid #00ff88;
+  border-radius:5px;
 }
-button:hover{background:#00ff66;color:#000;cursor:pointer}
+
+button{
+  background:#000;
+  color:#00ff88;
+  border:1px solid #00ff88;
+  padding:12px 20px;
+  margin-top:10px;
+  border-radius:5px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  background:#00ff88;
+  color:#000;
+}
+
+progress{
+  width:100%;
+  height:20px;
+  margin-top:15px;
+}
+
 .card{
   background:#000;
-  border:1px solid #00aa44;
-  padding:10px;
-  margin:10px 0;
-  border-radius:6px;
+  border:1px solid #00aa55;
+  border-radius:8px;
+  padding:15px;
+  margin-top:15px;
+  animation:fade .3s;
 }
-.safe{color:#00ff66;font-weight:bold}
-.danger{color:#ff5555;font-weight:bold}
-.critical{color:#ff0000;font-weight:bold}
-progress{width:100%;height:15px}
-#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
-small{word-break:break-all}
+
+.safe{
+  color:#00ff66;
+  font-weight:bold;
+}
+
+.medium{
+  color:#ffee55;
+  font-weight:bold;
+}
+
+.danger{
+  color:#ff5555;
+  font-weight:bold;
+}
+
+.critical{
+  color:#ff0000;
+  font-weight:bold;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;
+}
+
+.stat{
+  background:#000;
+  border:1px solid #00aa55;
+  border-radius:8px;
+  padding:15px;
+  text-align:center;
+}
+
+small{
+  word-break:break-all;
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
 </style>
+
 </head>
+
 <body>
 
 <canvas id="bg"></canvas>
 
-<h1>🛡️ NeonAV – Antivírus Web PRO</h1>
+<div class="container">
 
-<input type="file" id="fileInput" multiple
-accept=".txt,.log,.csv,.json,.html,.js,.pdf,.doc,.docx">
-<br>
-<button onclick="scan()">Escanear</button>
-<button onclick="exportReport()">Exportar Relatório</button>
+<h1>🛡️ NeonAV Secure PRO</h1>
 
-<progress id="progressBar" value="0" max="100"></progress>
+<div class="panel">
+
+<input
+type="file"
+id="fileInput"
+multiple
+accept=".txt,.js,.json,.html,.log,.csv"
+>
+
+<button onclick="scan()">
+🔍 Escanear Arquivos
+</button>
+
+<button onclick="exportReport()">
+📁 Exportar Relatório
+</button>
+
+<button onclick="clearHistory()">
+🗑️ Limpar Histórico
+</button>
+
+<progress
+id="progressBar"
+value="0"
+max="100">
+</progress>
+
+</div>
+
+<div class="panel">
 
 <h2>📊 Estatísticas</h2>
-<div id="stats" class="card"></div>
+
+<div
+class="stat-grid"
+id="stats">
+</div>
+
+</div>
+
+<div class="panel">
 
 <h2>🔍 Resultados</h2>
+
 <div id="resultados"></div>
 
-<h2>🗂️ Histórico</h2>
-<div id="historico"></div>
-<button onclick="clearHistory()">Limpar Histórico</button>
+</div>
 
+<div class="panel">
+
+<h2>🗂️ Histórico</h2>
+
+<div id="historico"></div>
+
+</div>
+
+</div>
+
+<!-- THREE -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
+<!-- ACORN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.11.3/acorn.min.js"></script>
+
 <script>
-// ===== FUNDO 3D =====
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,1000);
-camera.position.z=14;
-const renderer=new THREE.WebGLRenderer({canvas:bg});
-renderer.setSize(innerWidth,innerHeight);
-scene.background=new THREE.Color(0x010401);
-const group=new THREE.Group();scene.add(group);
-for(let i=0;i<60;i++){
-  const m=new THREE.Mesh(
-    new THREE.SphereGeometry(.08,12,12),
-    new THREE.MeshBasicMaterial({color:0x00ff66})
-  );
-  m.position.set((Math.random()-.5)*10,(Math.random()-.5)*10,(Math.random()-.5)*10);
-  group.add(m);
-}
-(function anim(){
-  requestAnimationFrame(anim);
-  group.rotation.y+=.002;
-  renderer.render(scene,camera);
-})();
-addEventListener("resize",()=>{
-  camera.aspect=innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
+
+// ======================================================
+// FUNDO 3D
+// ======================================================
+
+const bg = document.getElementById("bg");
+
+const scene = new THREE.Scene();
+
+const camera =
+new THREE.PerspectiveCamera(
+  60,
+  innerWidth/innerHeight,
+  0.1,
+  1000
+);
+
+camera.position.z = 14;
+
+const renderer =
+new THREE.WebGLRenderer({
+  canvas:bg,
+  antialias:true
 });
 
-// ===== ENGINE =====
-const normalize=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+renderer.setSize(
+  innerWidth,
+  innerHeight
+);
 
-const badDomains=["bit.ly","tinyurl",".ru",".cn",".exe"];
-const badCode=["eval(","atob(","document.write","new Function"];
+scene.background =
+new THREE.Color(0x010401);
 
-const advancedPatterns=[
-/fromCharCode\(/i,
-/unescape\(/i,
-/XMLHttpRequest/i,
-/fetch\(/i,
-/WebSocket/i,
-/document\.cookie/i,
-/window\.location/i
+const group =
+new THREE.Group();
+
+scene.add(group);
+
+for(let i=0;i<70;i++){
+
+  const mesh =
+  new THREE.Mesh(
+
+    new THREE.SphereGeometry(
+      0.08,
+      12,
+      12
+    ),
+
+    new THREE.MeshBasicMaterial({
+      color:0x00ff88
+    })
+  );
+
+  mesh.position.set(
+    (Math.random()-.5)*12,
+    (Math.random()-.5)*12,
+    (Math.random()-.5)*12
+  );
+
+  group.add(mesh);
+}
+
+(function animate(){
+
+  requestAnimationFrame(animate);
+
+  group.rotation.y += 0.0015;
+
+  group.rotation.x += 0.0008;
+
+  renderer.render(scene,camera);
+
+})();
+
+addEventListener("resize",()=>{
+
+  camera.aspect =
+  innerWidth/innerHeight;
+
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(
+    innerWidth,
+    innerHeight
+  );
+
+});
+
+// ======================================================
+// YARA RULES
+// ======================================================
+
+const yaraRules = [
+
+{
+  name:"Keylogger",
+  patterns:[
+    "keydown",
+    "keypress",
+    "document.cookie",
+    "addEventListener"
+  ],
+  threshold:2,
+  score:8
+},
+
+{
+  name:"Stealer",
+  patterns:[
+    "localStorage",
+    "fetch(",
+    "navigator.sendBeacon",
+    "sessionStorage"
+  ],
+  threshold:2,
+  score:10
+},
+
+{
+  name:"Crypto Malware",
+  patterns:[
+    "crypto.subtle",
+    "AES",
+    "RSA",
+    "encrypt("
+  ],
+  threshold:1,
+  score:9
+},
+
+{
+  name:"Obfuscation",
+  patterns:[
+    "eval(",
+    "atob(",
+    "Function(",
+    "fromCharCode"
+  ],
+  threshold:1,
+  score:7
+}
+
 ];
 
-const ransomwarePatterns=[
-/crypto\.subtle/i,
-/encrypt\(/i,
-/decrypt\(/i,
-/AES/i,
-/RSA/i
-];
-
-const keyloggerPatterns=[
-/addEventListener\(['"]keydown/i,
-/addEventListener\(['"]keypress/i,
-/onkeydown/i,
-/onkeypress/i
-];
-
+// ======================================================
 // SHA512
+// ======================================================
+
 async function sha512(text){
-  const buf=new TextEncoder().encode(text);
-  const hash=await crypto.subtle.digest("SHA-512",buf);
-  return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,"0")).join("");
+
+  const buf =
+  new TextEncoder().encode(text);
+
+  const hash =
+  await crypto.subtle.digest(
+    "SHA-512",
+    buf
+  );
+
+  return [...new Uint8Array(hash)]
+  .map(
+    b=>b.toString(16)
+    .padStart(2,"0")
+  )
+  .join("");
+
 }
 
-// ENTROPIA
+// ======================================================
+// WORKER INLINE
+// ======================================================
+
+const workerCode = `
+
+self.onmessage = async e=>{
+
+const {
+  raw,
+  fileName,
+  yaraRules
+} = e.data;
+
+let score = 0;
+
+let reasons = [];
+
 function entropy(str){
-  const map={};
-  for(let c of str) map[c]=(map[c]||0)+1;
-  let e=0,len=str.length;
+
+  const map = {};
+
+  for(let c of str){
+
+    map[c]=(map[c]||0)+1;
+
+  }
+
+  let e = 0;
+
   for(let k in map){
-    let p=map[k]/len;
-    e-=p*Math.log2(p);
+
+    let p = map[k]/str.length;
+
+    e -= p*Math.log2(p);
+
   }
+
   return e;
+
 }
 
-// BASE64
-function hasSuspiciousBase64(text){
-  const b64=text.match(/[A-Za-z0-9+/]{200,}={0,2}/g);
-  return b64?b64.length:0;
+const ent = entropy(raw);
+
+if(ent > 4.5){
+
+  score += 5;
+
+  reasons.push("Alta entropia");
+
 }
 
-// ===== SCAN =====
-async function scan(){
-  resultados.innerHTML="";
-  progressBar.value=0;
+// ================= YARA =================
 
-  const files=[...fileInput.files];
-  let done=0;
+for(const rule of yaraRules){
 
-  for(const f of files){
-    const r=new FileReader();
-    r.onload=async e=>{
-      const raw=e.target.result;
-      const text=normalize(raw);
+  let matched = 0;
 
-      let score=0;
-      let reasons=[];
-      let snippets=[];
+  for(const p of rule.patterns){
 
-      const hash=await sha512(raw);
-      const ent=entropy(raw);
+    if(raw.includes(p)){
 
-      if(ent>4.5){score+=5;reasons.push("Alta entropia");}
+      matched++;
 
-      if(hasSuspiciousBase64(raw)){
-        score+=5;
-        reasons.push("Base64 suspeito");
-      }
+    }
 
-      const ran=ransomwarePatterns.filter(p=>p.test(raw));
-      if(ran.length){score+=6;reasons.push("Ransomware");}
-
-      const key=keyloggerPatterns.filter(p=>p.test(raw));
-      if(key.length){score+=5;reasons.push("Keylogger");}
-
-      const adv=advancedPatterns.filter(p=>p.test(raw));
-      if(adv.length){score+=3;reasons.push("Malware JS");}
-
-      const urls=raw.match(/https?:\/\/\S+/g)||[];
-      if(urls.some(u=>badDomains.some(d=>u.includes(d)))){
-        score+=3;reasons.push("URL suspeita");
-      }
-
-      const codeHits=badCode.filter(c=>raw.includes(c));
-      if(codeHits.length){score+=4;reasons.push("Função perigosa");}
-
-      const risk=score<=3?"Baixo":
-                 score<=8?"Médio":
-                 score<=15?"Alto":"Crítico";
-
-      resultados.innerHTML+=`
-      <div class="card">
-        <b>${f.name}</b><br>
-        <small>SHA-512: ${hash}</small><br>
-        Entropia: ${ent.toFixed(2)}<br>
-        Motivos: ${reasons.join(", ")||"Nenhum"}<br>
-        Pontuação: ${score}<br>
-        Risco: <span class="${risk=="Baixo"?"safe":risk=="Crítico"?"critical":"danger"}">${risk}</span>
-      </div>`;
-
-      saveHistory(f.name,risk);
-
-      done++;
-      progressBar.value=(done/files.length)*100;
-      renderStats();
-      renderHistory();
-    };
-    r.readAsText(f);
   }
+
+  if(matched >= rule.threshold){
+
+    score += rule.score;
+
+    reasons.push(rule.name);
+
+  }
+
 }
 
-// ===== HISTÓRICO =====
-function saveHistory(name,risk){
-  const h=JSON.parse(localStorage.getItem("history"))||[];
-  h.push({name,risk,date:new Date().toLocaleString()});
-  localStorage.setItem("history",JSON.stringify(h));
+// ================= AST =================
+
+try{
+
+  const ast =
+  acorn.parse(
+    raw,
+    {
+      ecmaVersion:"latest"
+    }
+  );
+
+  walk(ast);
+
+  function walk(node){
+
+    if(
+      !node ||
+      typeof node !== "object"
+    ){
+      return;
+    }
+
+    // eval()
+
+    if(
+      node.type==="CallExpression" &&
+      node.callee &&
+      node.callee.name==="eval"
+    ){
+
+      score += 6;
+
+      reasons.push("eval()");
+
+    }
+
+    // Function()
+
+    if(
+      node.type==="NewExpression" &&
+      node.callee &&
+      node.callee.name==="Function"
+    ){
+
+      score += 6;
+
+      reasons.push("Dynamic Function");
+
+    }
+
+    // cookie access
+
+    if(
+      node.type==="MemberExpression" &&
+      node.property &&
+      node.property.name==="cookie"
+    ){
+
+      score += 4;
+
+      reasons.push("Cookie Access");
+
+    }
+
+    // WebAssembly
+
+    if(
+      node.type==="Identifier" &&
+      node.name==="WebAssembly"
+    ){
+
+      score += 5;
+
+      reasons.push("WebAssembly");
+
+    }
+
+    for(const k in node){
+
+      if(typeof node[k]==="object"){
+
+        walk(node[k]);
+
+      }
+
+    }
+
+  }
+
+}catch(err){
+
+  reasons.push("AST inválida");
+
 }
+
+// ================= URLS =================
+
+const urls =
+raw.match(/https?:\\\\/\\\\/\\\\S+/g)||[];
+
+const suspicious = [
+  "bit.ly",
+  "tinyurl",
+  ".onion"
+];
+
+for(const u of urls){
+
+  if(
+    suspicious.some(
+      d=>u.includes(d)
+    )
+  ){
+
+    score += 5;
+
+    reasons.push("URL suspeita");
+
+  }
+
+}
+
+// ================= BASE64 =================
+
+const b64 =
+raw.match(
+  /[A-Za-z0-9+/]{200,}={0,2}/g
+);
+
+if(b64){
+
+  score += 5;
+
+  reasons.push("Base64 suspeito");
+
+}
+
+// ================= RISK =================
+
+const risk =
+score <= 3
+? "Baixo"
+: score <= 8
+? "Médio"
+: score <= 15
+? "Alto"
+: "Crítico";
+
+self.postMessage({
+
+  fileName,
+  entropy:ent,
+  score,
+  reasons,
+  risk
+
+});
+
+};
+`;
+
+// ======================================================
+// WORKER
+// ======================================================
+
+const workerBlob =
+new Blob(
+  [workerCode],
+  {
+    type:"application/javascript"
+  }
+);
+
+const workerURL =
+URL.createObjectURL(workerBlob);
+
+// ======================================================
+// STORAGE
+// ======================================================
+
+function saveHistory(data){
+
+  const h =
+  JSON.parse(
+    localStorage.getItem("neonav-history")
+  ) || [];
+
+  h.push(data);
+
+  localStorage.setItem(
+    "neonav-history",
+    JSON.stringify(h)
+  );
+
+}
+
+function getHistory(){
+
+  return JSON.parse(
+    localStorage.getItem("neonav-history")
+  ) || [];
+
+}
+
+// ======================================================
+// RENDER HISTORY
+// ======================================================
 
 function renderHistory(){
-  const h=JSON.parse(localStorage.getItem("history"))||[];
-  historico.innerHTML=h.slice().reverse().map(i=>
-    `<div class="card">${i.name} - ${i.date} - 
-    <span class="${i.risk=="Baixo"?"safe":i.risk=="Crítico"?"critical":"danger"}">${i.risk}</span>
-    </div>`).join("");
+
+  const history =
+  getHistory();
+
+  const container =
+  document.getElementById("historico");
+
+  container.textContent = "";
+
+  history
+  .slice()
+  .reverse()
+  .forEach(item=>{
+
+    const card =
+    document.createElement("div");
+
+    card.className = "card";
+
+    const riskClass =
+    item.risk==="Baixo"
+    ? "safe"
+    : item.risk==="Médio"
+    ? "medium"
+    : item.risk==="Alto"
+    ? "danger"
+    : "critical";
+
+    card.innerHTML = \`
+      <b>\${item.fileName}</b><br>
+      <small>\${item.hash}</small><br>
+      Data: \${item.date}<br>
+      Risco:
+      <span class="\${riskClass}">
+      \${item.risk}
+      </span>
+    \`;
+
+    container.appendChild(card);
+
+  });
+
 }
+
+// ======================================================
+// STATS
+// ======================================================
 
 function renderStats(){
-  const h=JSON.parse(localStorage.getItem("history"))||[];
-  stats.innerHTML=`
-  Arquivos escaneados: ${h.length}<br>
-  Críticos: ${h.filter(x=>x.risk=="Crítico").length}
-  `;
+
+  const history =
+  getHistory();
+
+  const stats =
+  document.getElementById("stats");
+
+  const critical =
+  history.filter(
+    x=>x.risk==="Crítico"
+  ).length;
+
+  const high =
+  history.filter(
+    x=>x.risk==="Alto"
+  ).length;
+
+  stats.innerHTML = \`
+
+  <div class="stat">
+    <h3>\${history.length}</h3>
+    <p>Arquivos</p>
+  </div>
+
+  <div class="stat">
+    <h3>\${critical}</h3>
+    <p>Críticos</p>
+  </div>
+
+  <div class="stat">
+    <h3>\${high}</h3>
+    <p>Alto Risco</p>
+  </div>
+
+  \`;
+
 }
+
+// ======================================================
+// EXPORT
+// ======================================================
+
+function exportReport(){
+
+  const history =
+  getHistory();
+
+  const blob =
+  new Blob(
+    [
+      JSON.stringify(
+        history,
+        null,
+        2
+      )
+    ],
+    {
+      type:"application/json"
+    }
+  );
+
+  const a =
+  document.createElement("a");
+
+  a.href =
+  URL.createObjectURL(blob);
+
+  a.download =
+  "neonav-report.json";
+
+  a.click();
+
+}
+
+// ======================================================
+// CLEAR
+// ======================================================
 
 function clearHistory(){
-  localStorage.removeItem("history");
+
+  localStorage.removeItem(
+    "neonav-history"
+  );
+
   renderHistory();
+
   renderStats();
+
 }
 
-// EXPORTAR
-function exportReport(){
-  const h=JSON.parse(localStorage.getItem("history"))||[];
-  const blob=new Blob([JSON.stringify(h,null,2)],{type:"application/json"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="neonav-relatorio.json";
-  a.click();
+// ======================================================
+// SCAN
+// ======================================================
+
+async function scan(){
+
+const resultados =
+document.getElementById("resultados");
+
+const progressBar =
+document.getElementById("progressBar");
+
+resultados.textContent = "";
+
+progressBar.value = 0;
+
+const files =
+[
+  ...document
+  .getElementById("fileInput")
+  .files
+];
+
+if(!files.length){
+
+  alert("Selecione arquivos");
+
+  return;
+
 }
+
+let done = 0;
+
+for(const f of files){
+
+  if(
+    f.size >
+    10*1024*1024
+  ){
+
+    alert(
+      f.name +
+      " muito grande"
+    );
+
+    continue;
+
+  }
+
+  const reader =
+  new FileReader();
+
+  reader.onload = async e=>{
+
+    const raw =
+    e.target.result;
+
+    const hash =
+    await sha512(raw);
+
+    const worker =
+    new Worker(workerURL);
+
+    worker.postMessage({
+
+      raw,
+      fileName:f.name,
+      yaraRules
+
+    });
+
+    worker.onmessage = ev=>{
+
+      const data =
+      ev.data;
+
+      const card =
+      document.createElement("div");
+
+      card.className =
+      "card";
+
+      const riskClass =
+      data.risk==="Baixo"
+      ? "safe"
+      : data.risk==="Médio"
+      ? "medium"
+      : data.risk==="Alto"
+      ? "danger"
+      : "critical";
+
+      card.innerHTML = \`
+
+      <b>\${data.fileName}</b><br>
+
+      <small>
+      SHA512:
+      \${hash}
+      </small>
+
+      <br><br>
+
+      Entropia:
+      \${data.entropy.toFixed(2)}
+      <br>
+
+      Pontuação:
+      \${data.score}
+      <br>
+
+      Motivos:
+      \${data.reasons.join(", ")}
+      <br><br>
+
+      Risco:
+      <span class="\${riskClass}">
+      \${data.risk}
+      </span>
+
+      \`;
+
+      resultados.appendChild(card);
+
+      saveHistory({
+
+        fileName:data.fileName,
+        hash,
+        risk:data.risk,
+        score:data.score,
+        reasons:data.reasons,
+        date:new Date()
+        .toLocaleString()
+
+      });
+
+      done++;
+
+      progressBar.value =
+      (done/files.length)*100;
+
+      renderHistory();
+
+      renderStats();
+
+      worker.terminate();
+
+    };
+
+  };
+
+  reader.readAsText(f);
+
+}
+
+}
+
+// ======================================================
+// INIT
+// ======================================================
 
 renderHistory();
+
 renderStats();
+
 </script>
+
 </body>
 </html>
