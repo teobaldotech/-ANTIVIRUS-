@@ -3,23 +3,30 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🛡️ NeonAV Secure PRO</title>
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0"
+>
 
-<!-- CSP -->
-<meta http-equiv="Content-Security-Policy"
+<title>NeonAV Secure PRO</title>
+
+<!-- CSP SEGURA -->
+<meta
+http-equiv="Content-Security-Policy"
 content="
 default-src 'self';
-script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
+script-src 'self' https://cdnjs.cloudflare.com;
 style-src 'self' 'unsafe-inline';
+worker-src 'self' blob:;
+connect-src 'self';
 img-src 'self' data:;
 object-src 'none';
 base-uri 'none';
 frame-ancestors 'none';
 form-action 'self';
-upgrade-insecure-requests;
-">
+"
+/>
 
 <style>
 
@@ -39,10 +46,7 @@ body{
 
 #bg{
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  inset:0;
   z-index:-1;
 }
 
@@ -51,40 +55,30 @@ body{
   margin:auto;
 }
 
-h1{
-  text-align:center;
-  margin-bottom:20px;
-  font-size:2rem;
-  text-shadow:0 0 10px #00ff88;
-}
-
 .panel{
   background:#000;
   border:1px solid #00aa55;
   border-radius:10px;
   padding:20px;
   margin-bottom:20px;
-  box-shadow:0 0 10px #00ff44;
 }
 
+h1,h2{
+  margin-bottom:15px;
+}
+
+button,
 input[type=file]{
-  width:100%;
-  padding:10px;
   background:#000;
   color:#00ff88;
   border:1px solid #00ff88;
+  padding:10px;
   border-radius:5px;
 }
 
 button{
-  background:#000;
-  color:#00ff88;
-  border:1px solid #00ff88;
-  padding:12px 20px;
-  margin-top:10px;
-  border-radius:5px;
   cursor:pointer;
-  transition:.3s;
+  margin-top:10px;
 }
 
 button:hover{
@@ -103,8 +97,7 @@ progress{
   border:1px solid #00aa55;
   border-radius:8px;
   padding:15px;
-  margin-top:15px;
-  animation:fade .3s;
+  margin-top:10px;
 }
 
 .safe{
@@ -127,33 +120,21 @@ progress{
   font-weight:bold;
 }
 
-.stat-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:10px;
-}
-
-.stat{
-  background:#000;
-  border:1px solid #00aa55;
-  border-radius:8px;
-  padding:15px;
-  text-align:center;
-}
-
 small{
   word-break:break-all;
 }
 
-@keyframes fade{
-  from{
-    opacity:0;
-    transform:translateY(10px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+
+.stat{
+  border:1px solid #00aa55;
+  border-radius:8px;
+  padding:10px;
+  text-align:center;
 }
 
 </style>
@@ -174,19 +155,21 @@ small{
 type="file"
 id="fileInput"
 multiple
-accept=".txt,.js,.json,.html,.log,.csv"
->
+accept=".txt,.js,.json,.html,.csv,.log"
+/>
 
-<button onclick="scan()">
-🔍 Escanear Arquivos
+<br>
+
+<button id="scanBtn">
+Escanear
 </button>
 
-<button onclick="exportReport()">
-📁 Exportar Relatório
+<button id="exportBtn">
+Exportar
 </button>
 
-<button onclick="clearHistory()">
-🗑️ Limpar Histórico
+<button id="clearBtn">
+Limpar Histórico
 </button>
 
 <progress
@@ -227,26 +210,40 @@ id="stats">
 </div>
 
 <!-- THREE -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-<!-- ACORN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.11.3/acorn.min.js"></script>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+crossorigin="anonymous">
+</script>
 
 <script>
 
 // ======================================================
-// FUNDO 3D
+// CONFIG
 // ======================================================
 
-const bg = document.getElementById("bg");
+const MAX_FILE_SIZE =
+10 * 1024 * 1024;
 
-const scene = new THREE.Scene();
+const MAX_FILES = 50;
+
+const MAX_ANALYSIS =
+500000;
+
+// ======================================================
+// THREE BG
+// ======================================================
+
+const bg =
+document.getElementById("bg");
+
+const scene =
+new THREE.Scene();
 
 const camera =
 new THREE.PerspectiveCamera(
   60,
   innerWidth/innerHeight,
-  0.1,
+  .1,
   1000
 );
 
@@ -277,7 +274,7 @@ for(let i=0;i<70;i++){
   new THREE.Mesh(
 
     new THREE.SphereGeometry(
-      0.08,
+      .08,
       12,
       12
     ),
@@ -285,6 +282,7 @@ for(let i=0;i<70;i++){
     new THREE.MeshBasicMaterial({
       color:0x00ff88
     })
+
   );
 
   mesh.position.set(
@@ -294,15 +292,14 @@ for(let i=0;i<70;i++){
   );
 
   group.add(mesh);
+
 }
 
 (function animate(){
 
   requestAnimationFrame(animate);
 
-  group.rotation.y += 0.0015;
-
-  group.rotation.x += 0.0008;
+  group.rotation.y += .0015;
 
   renderer.render(scene,camera);
 
@@ -333,8 +330,7 @@ const yaraRules = [
   patterns:[
     "keydown",
     "keypress",
-    "document.cookie",
-    "addEventListener"
+    "document.cookie"
   ],
   threshold:2,
   score:8
@@ -344,24 +340,11 @@ const yaraRules = [
   name:"Stealer",
   patterns:[
     "localStorage",
-    "fetch(",
     "navigator.sendBeacon",
-    "sessionStorage"
+    "fetch("
   ],
   threshold:2,
   score:10
-},
-
-{
-  name:"Crypto Malware",
-  patterns:[
-    "crypto.subtle",
-    "AES",
-    "RSA",
-    "encrypt("
-  ],
-  threshold:1,
-  score:9
 },
 
 {
@@ -384,16 +367,16 @@ const yaraRules = [
 
 async function sha512(text){
 
-  const buf =
+  const encoded =
   new TextEncoder().encode(text);
 
-  const hash =
+  const hashBuffer =
   await crypto.subtle.digest(
     "SHA-512",
-    buf
+    encoded
   );
 
-  return [...new Uint8Array(hash)]
+  return [...new Uint8Array(hashBuffer)]
   .map(
     b=>b.toString(16)
     .padStart(2,"0")
@@ -403,285 +386,69 @@ async function sha512(text){
 }
 
 // ======================================================
-// WORKER INLINE
+// SAFE STORAGE
 // ======================================================
-
-const workerCode = `
-
-self.onmessage = async e=>{
-
-const {
-  raw,
-  fileName,
-  yaraRules
-} = e.data;
-
-let score = 0;
-
-let reasons = [];
-
-function entropy(str){
-
-  const map = {};
-
-  for(let c of str){
-
-    map[c]=(map[c]||0)+1;
-
-  }
-
-  let e = 0;
-
-  for(let k in map){
-
-    let p = map[k]/str.length;
-
-    e -= p*Math.log2(p);
-
-  }
-
-  return e;
-
-}
-
-const ent = entropy(raw);
-
-if(ent > 4.5){
-
-  score += 5;
-
-  reasons.push("Alta entropia");
-
-}
-
-// ================= YARA =================
-
-for(const rule of yaraRules){
-
-  let matched = 0;
-
-  for(const p of rule.patterns){
-
-    if(raw.includes(p)){
-
-      matched++;
-
-    }
-
-  }
-
-  if(matched >= rule.threshold){
-
-    score += rule.score;
-
-    reasons.push(rule.name);
-
-  }
-
-}
-
-// ================= AST =================
-
-try{
-
-  const ast =
-  acorn.parse(
-    raw,
-    {
-      ecmaVersion:"latest"
-    }
-  );
-
-  walk(ast);
-
-  function walk(node){
-
-    if(
-      !node ||
-      typeof node !== "object"
-    ){
-      return;
-    }
-
-    // eval()
-
-    if(
-      node.type==="CallExpression" &&
-      node.callee &&
-      node.callee.name==="eval"
-    ){
-
-      score += 6;
-
-      reasons.push("eval()");
-
-    }
-
-    // Function()
-
-    if(
-      node.type==="NewExpression" &&
-      node.callee &&
-      node.callee.name==="Function"
-    ){
-
-      score += 6;
-
-      reasons.push("Dynamic Function");
-
-    }
-
-    // cookie access
-
-    if(
-      node.type==="MemberExpression" &&
-      node.property &&
-      node.property.name==="cookie"
-    ){
-
-      score += 4;
-
-      reasons.push("Cookie Access");
-
-    }
-
-    // WebAssembly
-
-    if(
-      node.type==="Identifier" &&
-      node.name==="WebAssembly"
-    ){
-
-      score += 5;
-
-      reasons.push("WebAssembly");
-
-    }
-
-    for(const k in node){
-
-      if(typeof node[k]==="object"){
-
-        walk(node[k]);
-
-      }
-
-    }
-
-  }
-
-}catch(err){
-
-  reasons.push("AST inválida");
-
-}
-
-// ================= URLS =================
-
-const urls =
-raw.match(/https?:\\\\/\\\\/\\\\S+/g)||[];
-
-const suspicious = [
-  "bit.ly",
-  "tinyurl",
-  ".onion"
-];
-
-for(const u of urls){
-
-  if(
-    suspicious.some(
-      d=>u.includes(d)
-    )
-  ){
-
-    score += 5;
-
-    reasons.push("URL suspeita");
-
-  }
-
-}
-
-// ================= BASE64 =================
-
-const b64 =
-raw.match(
-  /[A-Za-z0-9+/]{200,}={0,2}/g
-);
-
-if(b64){
-
-  score += 5;
-
-  reasons.push("Base64 suspeito");
-
-}
-
-// ================= RISK =================
-
-const risk =
-score <= 3
-? "Baixo"
-: score <= 8
-? "Médio"
-: score <= 15
-? "Alto"
-: "Crítico";
-
-self.postMessage({
-
-  fileName,
-  entropy:ent,
-  score,
-  reasons,
-  risk
-
-});
-
-};
-`;
-
-// ======================================================
-// WORKER
-// ======================================================
-
-const workerBlob =
-new Blob(
-  [workerCode],
-  {
-    type:"application/javascript"
-  }
-);
-
-const workerURL =
-URL.createObjectURL(workerBlob);
-
-// ======================================================
-// STORAGE
-// ======================================================
-
-function saveHistory(data){
-
-  const h =
-  JSON.parse(
-    localStorage.getItem("neonav-history")
-  ) || [];
-
-  h.push(data);
-
-  localStorage.setItem(
-    "neonav-history",
-    JSON.stringify(h)
-  );
-
-}
 
 function getHistory(){
 
-  return JSON.parse(
-    localStorage.getItem("neonav-history")
-  ) || [];
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(
+        "neonav-history"
+      )
+    ) || [];
+
+  }catch{
+
+    return [];
+  }
+
+}
+
+function saveHistory(entry){
+
+  const history =
+  getHistory();
+
+  history.push(entry);
+
+  // limite
+  if(history.length > 500){
+
+    history.shift();
+
+  }
+
+  localStorage.setItem(
+    "neonav-history",
+    JSON.stringify(history)
+  );
+
+}
+
+// ======================================================
+// SAFE ELEMENT
+// ======================================================
+
+function createTextElement(
+  tag,
+  text,
+  className=""
+){
+
+  const el =
+  document.createElement(tag);
+
+  el.textContent = text;
+
+  if(className){
+
+    el.className = className;
+
+  }
+
+  return el;
 
 }
 
@@ -709,24 +476,51 @@ function renderHistory(){
 
     card.className = "card";
 
-    const riskClass =
-    item.risk==="Baixo"
-    ? "safe"
-    : item.risk==="Médio"
-    ? "medium"
-    : item.risk==="Alto"
-    ? "danger"
-    : "critical";
+    card.appendChild(
+      createTextElement(
+        "b",
+        item.fileName
+      )
+    );
 
-    card.innerHTML = \`
-      <b>\${item.fileName}</b><br>
-      <small>\${item.hash}</small><br>
-      Data: \${item.date}<br>
-      Risco:
-      <span class="\${riskClass}">
-      \${item.risk}
-      </span>
-    \`;
+    card.appendChild(
+      document.createElement("br")
+    );
+
+    card.appendChild(
+      createTextElement(
+        "small",
+        item.hash
+      )
+    );
+
+    card.appendChild(
+      document.createElement("br")
+    );
+
+    card.appendChild(
+      createTextElement(
+        "div",
+        "Data: " + item.date
+      )
+    );
+
+    const risk =
+    createTextElement(
+      "div",
+      "Risco: " + item.risk
+    );
+
+    risk.className =
+      item.risk === "Baixo"
+      ? "safe"
+      : item.risk === "Médio"
+      ? "medium"
+      : item.risk === "Alto"
+      ? "danger"
+      : "critical";
+
+    card.appendChild(risk);
 
     container.appendChild(card);
 
@@ -746,6 +540,8 @@ function renderStats(){
   const stats =
   document.getElementById("stats");
 
+  stats.textContent = "";
+
   const critical =
   history.filter(
     x=>x.risk==="Crítico"
@@ -756,24 +552,41 @@ function renderStats(){
     x=>x.risk==="Alto"
   ).length;
 
-  stats.innerHTML = \`
+  const total =
+  history.length;
 
-  <div class="stat">
-    <h3>\${history.length}</h3>
-    <p>Arquivos</p>
-  </div>
+  const items = [
 
-  <div class="stat">
-    <h3>\${critical}</h3>
-    <p>Críticos</p>
-  </div>
+    ["Arquivos",total],
+    ["Críticos",critical],
+    ["Alto risco",high]
 
-  <div class="stat">
-    <h3>\${high}</h3>
-    <p>Alto Risco</p>
-  </div>
+  ];
 
-  \`;
+  for(const [label,value] of items){
+
+    const box =
+    document.createElement("div");
+
+    box.className = "stat";
+
+    box.appendChild(
+      createTextElement(
+        "h3",
+        String(value)
+      )
+    );
+
+    box.appendChild(
+      createTextElement(
+        "p",
+        label
+      )
+    );
+
+    stats.appendChild(box);
+
+  }
 
 }
 
@@ -811,6 +624,8 @@ function exportReport(){
 
   a.click();
 
+  URL.revokeObjectURL(a.href);
+
 }
 
 // ======================================================
@@ -830,31 +645,343 @@ function clearHistory(){
 }
 
 // ======================================================
+// WORKER CODE
+// ======================================================
+
+const workerCode = `
+
+importScripts(
+"https://cdnjs.cloudflare.com/ajax/libs/acorn/8.11.3/acorn.min.js"
+);
+
+self.onmessage = e=>{
+
+const {
+  raw,
+  fileName,
+  yaraRules
+} = e.data;
+
+let score = 0;
+
+let reasons = [];
+
+const sample =
+raw.slice(0,500000);
+
+// ======================
+// ENTROPY
+// ======================
+
+function entropy(str){
+
+  const map = {};
+
+  for(const c of str){
+
+    map[c]=(map[c]||0)+1;
+
+  }
+
+  let e = 0;
+
+  for(const k in map){
+
+    const p =
+    map[k]/str.length;
+
+    e -= p*Math.log2(p);
+
+  }
+
+  return e;
+
+}
+
+const ent =
+entropy(
+  sample.slice(0,100000)
+);
+
+if(ent > 4.5){
+
+  score += 5;
+
+  reasons.push(
+    "Alta entropia"
+  );
+
+}
+
+// ======================
+// YARA
+// ======================
+
+for(const rule of yaraRules){
+
+  let matched = 0;
+
+  for(const p of rule.patterns){
+
+    if(sample.includes(p)){
+
+      matched++;
+
+    }
+
+  }
+
+  if(
+    matched >= rule.threshold
+  ){
+
+    score += rule.score;
+
+    reasons.push(rule.name);
+
+  }
+
+}
+
+// ======================
+// AST
+// ======================
+
+try{
+
+  const ast =
+  acorn.parse(
+    sample,
+    {
+      ecmaVersion:"latest"
+    }
+  );
+
+  const stack=[ast];
+
+  while(stack.length){
+
+    const node =
+    stack.pop();
+
+    if(
+      !node ||
+      typeof node !== "object"
+    ){
+      continue;
+    }
+
+    // eval()
+
+    if(
+      node.type==="CallExpression" &&
+      node.callee &&
+      node.callee.name==="eval"
+    ){
+
+      score += 6;
+
+      reasons.push("eval()");
+
+    }
+
+    // Function()
+
+    if(
+      node.type==="NewExpression" &&
+      node.callee &&
+      node.callee.name==="Function"
+    ){
+
+      score += 6;
+
+      reasons.push(
+        "Dynamic Function"
+      );
+
+    }
+
+    // cookie
+
+    if(
+      node.type==="MemberExpression" &&
+      node.property &&
+      node.property.name==="cookie"
+    ){
+
+      score += 4;
+
+      reasons.push(
+        "Cookie Access"
+      );
+
+    }
+
+    for(const k in node){
+
+      if(
+        typeof node[k] === "object"
+      ){
+
+        stack.push(node[k]);
+
+      }
+
+    }
+
+  }
+
+}catch{
+
+  reasons.push(
+    "AST inválida"
+  );
+
+}
+
+// ======================
+// URLS
+// ======================
+
+const urls =
+sample.match(
+/https?:\\/\\/[^\\s"'<>]+/g
+) || [];
+
+const suspicious = [
+  "bit.ly",
+  ".onion",
+  "tinyurl"
+];
+
+for(const url of urls){
+
+  try{
+
+    const parsed =
+    new URL(url);
+
+    if(
+      suspicious.some(
+        d=>parsed.hostname.includes(d)
+      )
+    ){
+
+      score += 5;
+
+      reasons.push(
+        "URL suspeita"
+      );
+
+    }
+
+  }catch{}
+
+}
+
+// ======================
+// BASE64
+// ======================
+
+const b64 =
+sample.match(
+/[A-Za-z0-9+/]{200,}={0,2}/g
+);
+
+if(b64 && b64.length < 20){
+
+  score += 4;
+
+  reasons.push(
+    "Base64 suspeito"
+  );
+
+}
+
+// ======================
+// RESULT
+// ======================
+
+const risk =
+score <= 3
+? "Baixo"
+: score <= 8
+? "Médio"
+: score <= 15
+? "Alto"
+: "Crítico";
+
+self.postMessage({
+
+  fileName,
+  entropy:ent,
+  score,
+  reasons,
+  risk
+
+});
+
+};
+`;
+
+// ======================================================
+// WORKER URL
+// ======================================================
+
+const workerBlob =
+new Blob(
+  [workerCode],
+  {
+    type:"application/javascript"
+  }
+);
+
+const workerURL =
+URL.createObjectURL(workerBlob);
+
+// ======================================================
 // SCAN
 // ======================================================
 
 async function scan(){
 
-const resultados =
-document.getElementById("resultados");
+const results =
+document.getElementById(
+  "resultados"
+);
 
-const progressBar =
-document.getElementById("progressBar");
+const progress =
+document.getElementById(
+  "progressBar"
+);
 
-resultados.textContent = "";
+results.textContent = "";
 
-progressBar.value = 0;
+progress.value = 0;
 
-const files =
-[
+const files = [
+
   ...document
   .getElementById("fileInput")
   .files
+
 ];
 
 if(!files.length){
 
-  alert("Selecione arquivos");
+  alert(
+    "Selecione arquivos"
+  );
+
+  return;
+
+}
+
+if(files.length > MAX_FILES){
+
+  alert(
+    "Máximo 50 arquivos"
+  );
 
   return;
 
@@ -862,16 +989,38 @@ if(!files.length){
 
 let done = 0;
 
-for(const f of files){
+for(const file of files){
+
+  if(file.size > MAX_FILE_SIZE){
+
+    alert(
+      file.name +
+      " excede limite"
+    );
+
+    continue;
+
+  }
+
+  // MIME
+  const allowed = [
+
+    "text/plain",
+    "application/json",
+    "text/html",
+    "text/javascript",
+    "application/javascript"
+
+  ];
 
   if(
-    f.size >
-    10*1024*1024
+    file.type &&
+    !allowed.includes(file.type)
   ){
 
     alert(
-      f.name +
-      " muito grande"
+      file.name +
+      " tipo não permitido"
     );
 
     continue;
@@ -881,109 +1030,191 @@ for(const f of files){
   const reader =
   new FileReader();
 
-  reader.onload = async e=>{
+  reader.onload =
+  async e=>{
 
-    const raw =
-    e.target.result;
+    try{
 
-    const hash =
-    await sha512(raw);
+      const buffer =
+      e.target.result;
 
-    const worker =
-    new Worker(workerURL);
+      const decoder =
+      new TextDecoder();
 
-    worker.postMessage({
+      const raw =
+      decoder.decode(buffer);
 
-      raw,
-      fileName:f.name,
-      yaraRules
+      const hash =
+      await sha512(raw);
 
-    });
+      const worker =
+      new Worker(workerURL);
 
-    worker.onmessage = ev=>{
+      // timeout
+      const timeout =
+      setTimeout(()=>{
 
-      const data =
-      ev.data;
+        worker.terminate();
 
-      const card =
-      document.createElement("div");
+      },5000);
 
-      card.className =
-      "card";
+      worker.postMessage({
 
-      const riskClass =
-      data.risk==="Baixo"
-      ? "safe"
-      : data.risk==="Médio"
-      ? "medium"
-      : data.risk==="Alto"
-      ? "danger"
-      : "critical";
-
-      card.innerHTML = \`
-
-      <b>\${data.fileName}</b><br>
-
-      <small>
-      SHA512:
-      \${hash}
-      </small>
-
-      <br><br>
-
-      Entropia:
-      \${data.entropy.toFixed(2)}
-      <br>
-
-      Pontuação:
-      \${data.score}
-      <br>
-
-      Motivos:
-      \${data.reasons.join(", ")}
-      <br><br>
-
-      Risco:
-      <span class="\${riskClass}">
-      \${data.risk}
-      </span>
-
-      \`;
-
-      resultados.appendChild(card);
-
-      saveHistory({
-
-        fileName:data.fileName,
-        hash,
-        risk:data.risk,
-        score:data.score,
-        reasons:data.reasons,
-        date:new Date()
-        .toLocaleString()
+        raw,
+        fileName:file.name,
+        yaraRules
 
       });
 
-      done++;
+      worker.onmessage =
+      ev=>{
 
-      progressBar.value =
-      (done/files.length)*100;
+        clearTimeout(timeout);
 
-      renderHistory();
+        const data =
+        ev.data;
 
-      renderStats();
+        const card =
+        document.createElement(
+          "div"
+        );
 
-      worker.terminate();
+        card.className =
+        "card";
 
-    };
+        card.appendChild(
+          createTextElement(
+            "b",
+            data.fileName
+          )
+        );
+
+        card.appendChild(
+          document.createElement(
+            "br"
+          )
+        );
+
+        card.appendChild(
+          createTextElement(
+            "small",
+            "SHA512: " + hash
+          )
+        );
+
+        card.appendChild(
+          createTextElement(
+            "div",
+            "Entropia: " +
+            data.entropy.toFixed(2)
+          )
+        );
+
+        card.appendChild(
+          createTextElement(
+            "div",
+            "Pontuação: " +
+            data.score
+          )
+        );
+
+        card.appendChild(
+          createTextElement(
+            "div",
+            "Motivos: " +
+            data.reasons.join(", ")
+          )
+        );
+
+        const risk =
+        createTextElement(
+          "div",
+          "Risco: " +
+          data.risk
+        );
+
+        risk.className =
+          data.risk==="Baixo"
+          ? "safe"
+          : data.risk==="Médio"
+          ? "medium"
+          : data.risk==="Alto"
+          ? "danger"
+          : "critical";
+
+        card.appendChild(risk);
+
+        results.appendChild(card);
+
+        saveHistory({
+
+          fileName:
+          data.fileName,
+
+          hash,
+
+          risk:
+          data.risk,
+
+          date:
+          new Date()
+          .toLocaleString()
+
+        });
+
+        done++;
+
+        progress.value =
+        (done/files.length)*100;
+
+        renderHistory();
+
+        renderStats();
+
+        worker.terminate();
+
+      };
+
+    }catch(err){
+
+      console.error(err);
+
+    }
 
   };
 
-  reader.readAsText(f);
+  reader.readAsArrayBuffer(
+    file
+  );
 
 }
 
 }
+
+// ======================================================
+// EVENTS
+// ======================================================
+
+document
+.getElementById("scanBtn")
+.addEventListener(
+  "click",
+  scan
+);
+
+document
+.getElementById("exportBtn")
+.addEventListener(
+  "click",
+  exportReport
+);
+
+document
+.getElementById("clearBtn")
+.addEventListener(
+  "click",
+  clearHistory
+);
 
 // ======================================================
 // INIT
