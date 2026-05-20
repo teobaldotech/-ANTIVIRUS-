@@ -1,0 +1,221 @@
+import React, { useEffect, useState } from "react";
+
+// ================= CONFIG =================
+const STORAGE_KEY = "neonav-history-web";
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+// ================= YARA RULES =================
+const yaraRules = [
+  {
+    name: "Keylogger",
+    patterns: ["keydown", "keypress", "document.cookie"],
+    threshold: 2,
+    score: 8,
+  },
+  {
+    name: "Stealer",
+    patterns: ["localStorage", "fetch(", "sendBeacon"],
+    threshold: 2,
+    score: 10,
+  },
+  {
+    name: "Obfuscation",
+    patterns: ["eval(", "atob(", "Function(", "fromCharCode"],
+    threshold: 1,
+    score: 7,
+  },
+];
+
+// ================= STORAGE =================
+function getHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(entry) {
+  const history = getHistory();
+  history.push(entry);
+  if (history.length > 500) history.shift();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+// ================= HASH =================
+async function sha512(text) {
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest("SHA-512", enc);
+
+  return [...new Uint8Array(buf)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+// ================= ANALYSIS =================
+function analyze(raw) {
+  let score = 0;
+  let reasons = [];
+
+  const sample = raw.slice(0, 500000);
+
+  // entropy
+  const freq = {};
+  for (const c of sample) freq[c] = (freq[c] || 0) + 1;
+
+  let entropy = 0;
+  for (const k in freq) {
+    const p = freq[k] / sample.length;
+    entropy -= p * Math.log2(p);
+  }
+
+  if (entropy > 4.5) {
+    score += 5;
+    reasons.push("Alta entropia");
+  }
+
+  // YARA
+  for (const r of yaraRules) {
+    let m = 0;
+    for (const p of r.patterns) {
+      if (sample.includes(p)) m++;
+    }
+    if (m >= r.threshold) {
+      score += r.score;
+      reasons.push(r.name);
+    }
+  }
+
+  // URLs
+  const urls = sample.match(/https?:\/\/[^\s"'<>()]+/g) || [];
+  const bad = ["bit.ly", "tinyurl", ".onion"];
+
+  for (const u of urls) {
+    if (bad.some((b) => u.includes(b))) {
+      score += 5;
+      reasons.push("URL suspeita");
+    }
+  }
+
+  const risk =
+    score <= 3
+      ? "Baixo"
+      : score <= 8
+      ? "Médio"
+      : score <= 15
+      ? "Alto"
+      : "Crítico";
+
+  return { score, reasons, entropy, risk };
+}
+
+// ================= APP =================
+export default function App() {
+  const [files, setFiles] = useState([]);
+  const [results, setResults] = useState([]);
+  const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    setHistory(getHistory());
+  }, []);
+
+  function pickFiles(e) {
+    setFiles(Array.from(e.target.files || []));
+  }
+
+  async function scan() {
+    if (!files.length) {
+      alert("Selecione arquivos");
+      return;
+    }
+
+    const out = [];
+
+    for (const file of files) {
+      if (file.size > MAX_FILE_SIZE) {
+        alert(file.name + " muito grande");
+        continue;
+      }
+
+      const raw = await file.text();
+      const hash = await sha512(raw);
+      const analysis = analyze(raw);
+
+      const result = {
+        fileName: file.name,
+        hash,
+        date: new Date().toLocaleString(),
+        ...analysis,
+      };
+
+      out.push(result);
+      saveHistory(result);
+    }
+
+    setResults(out);
+    setHistory(getHistory());
+  }
+
+  function clearHistory() {
+    localStorage.removeItem(STORAGE_KEY);
+    setHistory([]);
+  }
+
+  function exportData() {
+    const data = getHistory();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "neonav-report.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div style={{ padding: 20, background: "#010401", color: "#00ff88" }}>
+      <h2>🛡️ NeonAV Secure PRO</h2>
+
+      <div style={{ marginBottom: 10 }}>
+        <input type="file" multiple onChange={pickFiles} />
+        <br />
+        <button onClick={scan}>Escanear</button>
+        <button onClick={exportData}>Exportar</button>
+        <button onClick={clearHistory}>Limpar histórico</button>
+      </div>
+
+      <h3>📊 Resultados</h3>
+
+      {results.map((r, i) => (
+        <div
+          key={i}
+          style={{
+            border: "1px solid #00aa55",
+            padding: 10,
+            marginBottom: 10,
+          }}
+        >
+          <div>{r.fileName}</div>
+          <div>Score: {r.score}</div>
+          <div>Entropia: {r.entropy.toFixed(2)}</div>
+          <div>Risco: {r.risk}</div>
+          <div>Motivos: {r.reasons.join(", ")}</div>
+          <div style={{ fontSize: 10 }}>{r.hash}</div>
+        </div>
+      ))}
+
+      <h3>🗂️ Histórico</h3>
+
+      {history.map((h, i) => (
+        <div key={i} style={{ border: "1px solid #333", padding: 8 }}>
+          <div>{h.fileName}</div>
+          <div>{h.risk}</div>
+          <div>{h.date}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
