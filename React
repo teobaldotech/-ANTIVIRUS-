@@ -55,6 +55,120 @@ button{
     padding:20px;
 }
 
+/* Estilos da Capa */
+.cover{
+    position:fixed;
+    inset:0;
+    background-color:#030806;
+    background-image:
+        radial-gradient(circle at 20% 10%,rgba(0,255,136,.08),transparent 25%),
+        radial-gradient(circle at 80% 30%,rgba(0,180,100,.06),transparent 25%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    transition:opacity .5s ease-out, visibility .5s ease-out;
+}
+
+.cover.hidden{
+    opacity:0;
+    visibility:hidden;
+}
+
+.cover-content{
+    text-align:center;
+    padding:20px;
+    max-width:850px;
+}
+
+.cover-logo{
+    font-size:120px;
+    color:var(--green);
+    filter:drop-shadow(0 0 50px rgba(0,255,136,.5));
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{ transform:scale(1); filter:drop-shadow(0 0 50px rgba(0,255,136,.5)); }
+    50%{ transform:scale(1.05); filter:drop-shadow(0 0 70px rgba(0,255,136,.7)); }
+    100%{ transform:scale(1); filter:drop-shadow(0 0 50px rgba(0,255,136,.5)); }
+}
+
+.cover-title{
+    font-size:50px;
+    margin:15px 0 10px;
+    color:var(--green);
+    text-shadow:0 0 25px var(--green);
+}
+
+.cover-subtitle{
+    font-size:15px;
+    color:var(--muted);
+    margin-bottom:30px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.cover-features{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    margin-top:20px;
+    margin-bottom:40px;
+}
+
+.cover-feature{
+    padding:8px 18px;
+    border:1px solid var(--border);
+    border-radius:30px;
+    font-size:12px;
+    color:var(--muted);
+    background:rgba(7,19,13,.5);
+}
+
+/* Botões interativos na Capa */
+.cover-actions{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.cover-btn{
+    padding:14px 28px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:bold;
+    transition:.2s;
+    border:1px solid var(--border);
+}
+
+.cover-btn.primary{
+    background:var(--green);
+    color:#00170c;
+    border-color:var(--green);
+    box-shadow:0 0 25px rgba(0,255,136,.3);
+}
+
+.cover-btn.primary:hover{
+    box-shadow:0 0 35px rgba(0,255,136,.5);
+    transform:translateY(-2px);
+}
+
+.cover-btn.secondary{
+    background:#0a1d13;
+    color:var(--text);
+    border-color:var(--border);
+}
+
+.cover-btn.secondary:hover{
+    border-color:var(--green);
+    box-shadow:0 0 15px rgba(0,255,136,.15);
+    transform:translateY(-2px);
+}
+
+/* Resto dos estilos originais */
 header{
     display:flex;
     justify-content:space-between;
@@ -581,6 +695,9 @@ select:focus{
     .result-head{
         flex-direction:column;
     }
+
+    .cover-title{ font-size:35px; }
+    .cover-logo{ font-size:90px; }
 }
 
 @media(max-width:420px){
@@ -596,6 +713,27 @@ select:focus{
 </head>
 
 <body>
+
+<!-- Capa com Botões Clicáveis -->
+<div class="cover" id="coverScreen">
+    <div class="cover-content">
+        <div class="cover-logo">🛡️</div>
+        <h2 class="cover-title">NeonAV Secure PRO ULTRA</h2>
+        <div class="cover-subtitle">Scanner Heurístico Local Avançado</div>
+        
+        <div class="cover-features">
+            <span class="cover-feature">Proteção Offline</span>
+            <span class="cover-feature">SHA-512</span>
+            <span class="cover-feature">Análise IOC</span>
+            <span class="cover-feature">Entropia de Bytes</span>
+        </div>
+
+        <div class="cover-actions">
+            <button class="cover-btn primary" id="coverStartBtn">🚀 Acessar Sistema</button>
+            <button class="cover-btn secondary" id="coverTestBtn">🧪 Abrir Laboratório de Testes</button>
+        </div>
+    </div>
+</div>
 
 <div class="app">
 
@@ -1105,6 +1243,25 @@ Adicionar
 <script>
 
 "use strict";
+
+
+/* =========================================================
+   CONTROLES DA CAPA (BOTÕES CLICÁVEIS)
+========================================================= */
+
+const coverScreen = document.getElementById("coverScreen");
+const coverStartBtn = document.getElementById("coverStartBtn");
+const coverTestBtn = document.getElementById("coverTestBtn");
+const testModal = document.getElementById("testModal");
+
+coverStartBtn.addEventListener("click", () => {
+    coverScreen.classList.add("hidden");
+});
+
+coverTestBtn.addEventListener("click", () => {
+    coverScreen.classList.add("hidden");
+    testModal.classList.add("show");
+});
 
 
 /* =========================================================
@@ -3094,9 +3251,6 @@ exportHTML
 /* =========================================================
    LABORATÓRIO
 ========================================================= */
-
-const testModal =
-$("testModal");
 
 $("testBtn").addEventListener(
 "click",
