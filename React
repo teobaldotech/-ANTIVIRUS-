@@ -719,7 +719,7 @@ select:focus{
     <div class="cover-content">
         <div class="cover-logo">🛡️</div>
         <h2 class="cover-title">NeonAV Secure PRO ULTRA</h2>
-        <div class="cover-subtitle">Scanner Heurístico Local Avançado</div>
+        <div class="cover-subtitle">Scanner Heurístico Multiplataforma</div>
         
         <div class="cover-features">
             <span class="cover-feature">Proteção Offline</span>
@@ -745,7 +745,7 @@ select:focus{
 <div>
 <h1>NeonAV Secure PRO ULTRA</h1>
 <div class="subtitle">
-Scanner heurístico local • SHA-512 • IOC • Entropia • Relatórios
+Scanner heurístico multiplataforma • SHA-512 • IOC • Entropia
 </div>
 </div>
 </div>
@@ -1117,7 +1117,7 @@ NeonAV inicializado.
 
 
 <div class="footer">
-NeonAV Secure PRO ULTRA • análise local no navegador • uso educacional e defensivo
+NeonAV Secure PRO ULTRA • Suporte Android, iOS e Windows • Uso defensivo
 </div>
 
 </div>
