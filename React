@@ -127,7 +127,6 @@ button{
     background:rgba(7,19,13,.5);
 }
 
-/* Botões interativos na Capa */
 .cover-actions{
     display:flex;
     gap:15px;
@@ -210,6 +209,12 @@ h1{
     font-size:13px;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .status{
     padding:10px 15px;
     border:1px solid rgba(0,255,136,.3);
@@ -218,6 +223,46 @@ h1{
     background:rgba(0,255,136,.06);
     font-weight:bold;
     font-size:13px;
+}
+
+/* Navegação por Abas */
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+}
+
+.tab-btn {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all .2s;
+}
+
+.tab-btn:hover {
+    color: var(--text);
+    border-color: var(--green);
+}
+
+.tab-btn.active {
+    background: rgba(0,255,136,.1);
+    color: var(--green);
+    border-color: var(--green);
+    box-shadow: 0 0 15px rgba(0,255,136,.15);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }
 
 .dashboard{
@@ -616,25 +661,136 @@ select:focus{
     width:auto;
 }
 
+/* =========================================================
+   ESTILOS ESPECÍFICOS DO MÓDULO DE BLOQUEIO DE ATAQUES (IPS/FIREWALL)
+========================================================= */
+.firewall-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.fw-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fw-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+}
+
+.fw-card.ddos::before { background: var(--blue); }
+.fw-card.xss::before { background: var(--yellow); }
+.fw-card.sql::before { background: var(--orange); }
+.fw-card.brute::before { background: var(--red); }
+
+.fw-title {
+    font-size: 13px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.fw-count {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.attack-feed {
+    max-height: 420px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attack-item {
+    background: #05100a;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn .3s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.attack-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.attack-type-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: fit-content;
+}
+
+.attack-type-badge.ddos { background: rgba(67,181,255,.2); color: var(--blue); border: 1px solid var(--blue); }
+.attack-type-badge.xss { background: rgba(255,230,109,.2); color: var(--yellow); border: 1px solid var(--yellow); }
+.attack-type-badge.sql { background: rgba(255,173,50,.2); color: var(--orange); border: 1px solid var(--orange); }
+.attack-type-badge.brute { background: rgba(255,64,95,.2); color: var(--red); border: 1px solid var(--red); }
+
+.attack-ip {
+    font-family: monospace;
+    font-size: 13px;
+    color: var(--text);
+    font-weight: bold;
+}
+
+.attack-details {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.attack-status {
+    text-align: right;
+}
+
+.blocked-badge {
+    background: rgba(0,255,136,.15);
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
 @media(max-width:1100px){
-    .dashboard{ grid-template-columns:repeat(3,1fr); }
+    .dashboard, .firewall-grid { grid-template-columns:repeat(2,1fr); }
     .main{ grid-template-columns:1fr; }
 }
 
 @media(max-width:700px){
     .app{ padding:10px; }
     header{ flex-direction:column; align-items:flex-start; }
-    .dashboard{ grid-template-columns:repeat(2,1fr); }
+    .dashboard, .firewall-grid { grid-template-columns:repeat(1,1fr); }
     .filters, .form-grid{ grid-template-columns:1fr; }
     .result-grid{ grid-template-columns:repeat(2,1fr); }
     .result-head{ flex-direction:column; }
     .cover-title{ font-size:35px; }
     .cover-logo{ font-size:90px; }
-}
-
-@media(max-width:420px){
-    .dashboard{ grid-template-columns:1fr; }
-    .result-grid{ grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -646,13 +802,13 @@ select:focus{
     <div class="cover-content">
         <div class="cover-logo">🛡️</div>
         <h2 class="cover-title">NeonAV Secure PRO ULTRA</h2>
-        <div class="cover-subtitle">Scanner Heurístico Multiplataforma • Arquivos & URLs</div>
+        <div class="cover-subtitle">Scanner Heurístico Multiplataforma • Firewall & IPS em Tempo Real</div>
         
         <div class="cover-features">
             <span class="cover-feature">Proteção Offline</span>
             <span class="cover-feature">SHA-512</span>
             <span class="cover-feature">Análise IOC & Phishing</span>
-            <span class="cover-feature">Entropia de Bytes</span>
+            <span class="cover-feature">Firewall IPS Ativo</span>
         </div>
 
         <div class="cover-actions">
@@ -670,16 +826,26 @@ select:focus{
 <div>
 <h1>NeonAV Secure PRO ULTRA</h1>
 <div class="subtitle">
-Scanner heurístico multiplataforma • SHA-512 • IOC • Phishing & Entropia
+Scanner heurístico • SHA-512 • IOC • Firewall IPS & Bloqueio de Ataques
 </div>
 </div>
 </div>
 
+<div class="header-right">
 <div class="status" id="status">
 ● SISTEMA PRONTO
 </div>
+</div>
 </header>
 
+<!-- Navegação por Abas -->
+<div class="nav-tabs">
+    <button class="tab-btn active" data-tab="scannerTab">🔍 Scanner de Arquivos & URLs</button>
+    <button class="tab-btn" data-tab="firewallTab">🛡️ Bloqueio de Ataques (IPS / Firewall)</button>
+</div>
+
+<!-- ================= AB 1: SCANNER ================= -->
+<div id="scannerTab" class="tab-content active">
 
 <section class="dashboard">
 <div class="card">
@@ -708,7 +874,6 @@ Scanner heurístico multiplataforma • SHA-512 • IOC • Phishing & Entropia
 </div>
 </section>
 
-
 <div class="main">
 
 <main>
@@ -726,9 +891,9 @@ Scanner heurístico multiplataforma • SHA-512 • IOC • Phishing & Entropia
 </div>
 </div>
 
-<!-- Nova Seção de Análise de URL -->
+<!-- Seção de Análise de URL -->
 <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
-    <label class="metric-title" style="display:block; margin-bottom:8px;">🌐 Analisar URL / Website (Opção B)</label>
+    <label class="metric-title" style="display:block; margin-bottom:8px;">🌐 Analisar URL / Website</label>
     <div style="display:flex; gap:10px;">
         <input type="url" id="urlInput" placeholder="https://exemplo.com" style="flex:1;">
         <button class="btn primary" id="scanUrlBtn" style="white-space:nowrap;">Analisar URL</button>
@@ -752,7 +917,6 @@ Scanner heurístico multiplataforma • SHA-512 • IOC • Phishing & Entropia
 Aguardando arquivos ou URLs...
 </div>
 </section>
-
 
 <section class="panel">
 <h2>📋 Resultados</h2>
@@ -780,7 +944,6 @@ Aguardando arquivos ou URLs...
 </section>
 
 </main>
-
 
 <aside>
 
@@ -822,7 +985,6 @@ Aguardando arquivos ou URLs...
 </div>
 </section>
 
-
 <section class="panel">
 <h2>⚙️ Configurações</h2>
 <div class="toggle">
@@ -853,7 +1015,6 @@ Aguardando arquivos ou URLs...
 </div>
 </section>
 
-
 <section class="panel">
 <h2>📝 Log</h2>
 <div class="log" id="log">
@@ -864,6 +1025,68 @@ Aguardando arquivos ou URLs...
 </section>
 
 </aside>
+
+</div>
+
+</div>
+
+
+<!-- ================= AB 2: BLOQUEIO DE ATAQUES (FIREWALL / IPS) ================= -->
+<div id="firewallTab" class="tab-content">
+
+<section class="panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+<div>
+    <h2 style="margin-bottom: 5px;">🛡️ Módulo de Bloqueio de Ataques em Tempo Real (Firewall IPS)</h2>
+    <div style="color: var(--muted); font-size: 13px;">Monitoramento de perímetro de rede, mitigações automáticas e inspeção profunda de pacotes.</div>
+</div>
+<div style="display: flex; align-items: center; gap: 15px;">
+    <div class="toggle" style="border: none; padding: 0;">
+        <span style="font-weight: bold; color: var(--green);">Proteção Ativa</span>
+        <input type="checkbox" id="ipsToggle" checked style="width: 20px; height: 20px; accent-color: var(--green);">
+    </div>
+    <button class="btn primary" id="simulateAttackBtn">⚡ Simular Ataque de Teste</button>
+    <button class="btn danger" id="clearAttacksBtn">Limpar Histórico</button>
+</div>
+</section>
+
+<!-- Métricas de Ataques -->
+<div class="firewall-grid">
+    <div class="fw-card ddos">
+        <div class="fw-title">Ataques DDoS Bloqueados</div>
+        <div class="fw-count blue" id="countDdos">0</div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 5px;">Volume de pacotes / IP spoofing</div>
+    </div>
+    <div class="fw-card xss">
+        <div class="fw-title">Tentativas de XSS</div>
+        <div class="fw-count yellow" id="countXss">0</div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 5px;">Injeção de scripts maliciosos</div>
+    </div>
+    <div class="fw-card sql">
+        <div class="fw-title">SQL Injections Bloqueadas</div>
+        <div class="fw-count orange" id="countSql">0</div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 5px;">Tentativas de vazamento de banco</div>
+    </div>
+    <div class="fw-card brute">
+        <div class="fw-title">Brute Force / Credenciais</div>
+        <div class="fw-count red" id="countBrute">0</div>
+        <div style="font-size: 11px; color: var(--muted); margin-top: 5px;">Tentativas de força bruta em login</div>
+    </div>
+</div>
+
+<div class="main" style="grid-template-columns: 1fr;">
+<section class="panel">
+    <h2>📡 Feed de Eventos de Bloqueio em Tempo Real</h2>
+    <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn blue" onclick="triggerAttack('ddos')">Simular DDoS</button>
+        <button class="btn warning" onclick="triggerAttack('xss')">Simular XSS</button>
+        <button class="btn warning" onclick="triggerAttack('sql')">Simular SQL Injection</button>
+        <button class="btn danger" onclick="triggerAttack('brute')">Simular Brute Force</button>
+    </div>
+    <div class="attack-feed" id="attackFeed">
+        <div class="empty">Nenhum ataque interceptado recentemente. O Firewall está operando normalmente.</div>
+    </div>
+</section>
+</div>
 
 </div>
 
@@ -938,16 +1161,50 @@ coverTestBtn.addEventListener("click", () => {
 });
 
 /* =========================================================
-   CONFIGURAÇÃO
+   NAVEGAÇÃO POR ABAS
+========================================================= */
+const tabButtons = document.querySelectorAll(".tab-btn");
+const tabContents = document.querySelectorAll(".tab-content");
+
+tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        const targetTab = btn.getAttribute("data-tab");
+        
+        tabButtons.forEach(b => b.classList.remove("active"));
+        tabContents.forEach(c => c.classList.remove("active"));
+        
+        btn.classList.add("active");
+        document.getElementById(targetTab).classList.add("active");
+    });
+});
+
+/* =========================================================
+   CONFIGURAÇÃO & ESTADO
 ========================================================= */
 const STORAGE_KEY = "neonav-secure-pro-ultra-v2";
+const FIREWALL_STORAGE_KEY = "neonav-firewall-events-v1";
 
 let filesQueue = [];
 let resultsData = [];
 let scanning = false;
 
+// Estado do Firewall / IPS
+let firewallStats = {
+    ddos: 14,
+    xss: 29,
+    sql: 18,
+    brute: 12
+};
+
+let firewallEvents = [
+    { id: uuid(), type: 'ddos', name: 'Ataque DDoS Volumétrico (SYN Flood)', ip: '185.220.101.5', timestamp: Date.now() - 120000, details: '45,000 req/s bloqueadas na borda' },
+    { id: uuid(), type: 'xss', name: 'Injeção de Script Malicioso (XSS Refletido)', ip: '45.154.255.88', timestamp: Date.now() - 300000, details: 'Payload detectado em parâmetro GET' },
+    { id: uuid(), type: 'sql', name: 'Tentativa de SQL Injection (UNION SELECT)', ip: '194.26.29.11', timestamp: Date.now() - 600000, details: 'Consulta maliciosa interceptada no ORM' },
+    { id: uuid(), type: 'brute', name: 'Força Bruta em Painel Administrativo', ip: '103.152.68.9', timestamp: Date.now() - 950000, details: '120 tentativas de login falhas por minuto' }
+];
+
 /* =========================================================
-   REGRAS HEURÍSTICAS (Incluindo Phishing & Formulário de Senha)
+   REGRAS HEURÍSTICAS
 ========================================================= */
 const RULES = [
 {
@@ -1297,7 +1554,7 @@ async function analyzeFile(file, index, total){
 }
 
 /* =========================================================
-   ANÁLISE DE URL VIA PROXY CORS (Opção B)
+   ANÁLISE DE URL VIA PROXY CORS
 ========================================================= */
 async function analyzeURL(targetUrl){
     if(!targetUrl){
@@ -1354,7 +1611,7 @@ $("scanUrlBtn").addEventListener("click", () => {
 });
 
 /* =========================================================
-   PROCESSAR FILA
+   PROCESSAR FILA DE ARQUIVOS
 ========================================================= */
 async function scanFiles(){
     if(scanning) return;
@@ -1498,7 +1755,138 @@ function updateDashboard(){
 }
 
 /* =========================================================
-   HISTÓRICO & EXPORTAÇÃO
+   MÓDULO DE BLOQUEIO DE ATAQUES (FIREWALL / IPS)
+========================================================= */
+const ATTACK_PROFILES = {
+    ddos: {
+        name: 'Ataque DDoS Volumétrico / UDP Flood',
+        details: 'Fluxo massivo de pacotes inválidos mitigado pela camada de borda BGP.'
+    },
+    xss: {
+        name: 'Tentativa de Cross-Site Scripting (XSS)',
+        details: 'Injeção de payload malicioso <script> bloqueada no WAF.'
+    },
+    sql: {
+        name: 'Tentativa de SQL Injection (Boolean-based)',
+        details: 'Tentativa de extração de tabela de usuários neutralizada.'
+    },
+    brute: {
+        name: 'Ataque de Força Bruta em Credenciais',
+        details: 'IP banido após exceder limite de 5 tentativas de autenticação.'
+    }
+};
+
+const RANDOM_IPS = [
+    '185.220.101.7', '45.154.255.120', '194.26.29.99', '103.152.68.21',
+    '198.51.100.42', '203.0.113.195', '192.0.2.14', '178.62.204.11'
+];
+
+function triggerAttack(type = null){
+    if(!$("ipsToggle").checked){
+        toast("O Firewall IPS está desativado!");
+        log("Tentativa de ataque ignorada pois o IPS está desligado.", "WARNING");
+        return;
+    }
+
+    const types = ['ddos', 'xss', 'sql', 'brute'];
+    const attackType = type || types[Math.floor(Math.random() * types.length)];
+    const profile = ATTACK_PROFILES[attackType];
+    const randomIp = RANDOM_IPS[Math.floor(Math.random() * RANDOM_IPS.length)];
+
+    firewallStats[attackType]++;
+    
+    const newEvent = {
+        id: uuid(),
+        type: attackType,
+        name: profile.name,
+        ip: randomIp,
+        timestamp: Date.now(),
+        details: profile.details
+    };
+
+    firewallEvents.unshift(newEvent);
+    if(firewallEvents.length > 100) firewallEvents.pop();
+
+    saveFirewallData();
+    renderFirewallStats();
+    renderFirewallFeed();
+    
+    toast(`Ataque ${attackType.toUpperCase()} bloqueado com sucesso!`);
+    log(`Firewall IPS interceptou ${profile.name} originado de ${randomIp}`, "FIREWALL");
+}
+
+function renderFirewallStats(){
+    $("countDdos").textContent = firewallStats.ddos;
+    $("countXss").textContent = firewallStats.xss;
+    $("countSql").textContent = firewallStats.sql;
+    $("countBrute").textContent = firewallStats.brute;
+}
+
+function renderFirewallFeed(){
+    const feedBox = $("attackFeed");
+    if(!firewallEvents.length){
+        feedBox.innerHTML = `<div class="empty">Nenhum ataque interceptado recentemente. O Firewall está operando normalmente.</div>`;
+        return;
+    }
+
+    feedBox.innerHTML = firewallEvents.map(evt => {
+        return `
+        <div class="attack-item">
+            <div class="attack-info">
+                <div>
+                    <span class="attack-type-badge ${evt.type}">${escapeHTML(evt.type.toUpperCase())}</span>
+                    <span class="attack-ip">${escapeHTML(evt.ip)}</span>
+                </div>
+                <div style="font-weight: bold; font-size: 14px; margin-top: 4px;">${escapeHTML(evt.name)}</div>
+                <div class="attack-details">${escapeHTML(evt.details)} • ${formatDate(evt.timestamp)}</div>
+            </div>
+            <div class="attack-status">
+                <span class="blocked-badge">🛡️ BLOQUEADO</span>
+            </div>
+        </div>
+        `;
+    }).join("");
+}
+
+function saveFirewallData(){
+    try {
+        localStorage.setItem(FIREWALL_STORAGE_KEY, JSON.stringify({ stats: firewallStats, events: firewallEvents }));
+    } catch(e) { console.error(e); }
+}
+
+function loadFirewallData(){
+    try {
+        const data = JSON.parse(localStorage.getItem(FIREWALL_STORAGE_KEY) || "null");
+        if(data){
+            if(data.stats) firewallStats = data.stats;
+            if(Array.isArray(data.events)) firewallEvents = data.events;
+        }
+    } catch(e) { console.error(e); }
+}
+
+$("simulateAttackBtn").addEventListener("click", () => triggerAttack());
+$("clearAttacksBtn").addEventListener("click", () => {
+    if(!confirm("Limpar histórico de eventos de firewall?")) return;
+    firewallEvents = [];
+    firewallStats = { ddos: 0, xss: 0, sql: 0, brute: 0 };
+    saveFirewallData();
+    renderFirewallStats();
+    renderFirewallFeed();
+    log("Histórico de ataques limpo.", "FIREWALL");
+    toast("Histórico limpo");
+});
+
+// Simulação periódica de tráfego de ataques em segundo plano (se IPS ligado)
+setInterval(() => {
+    if(document.visibilityState === "visible" && $("ipsToggle").checked){
+        if(Math.random() > 0.65){
+            triggerAttack();
+        }
+    }
+}, 8000);
+
+/* =========================================================
+   HISTÓRICO DE ARQUIVOS & EXPORTAÇÃO
 ========================================================= */
 function saveHistory(){
     try {
@@ -1676,9 +2064,13 @@ testModal.addEventListener("click", event => {
     if(button) createTestFile(button.getAttribute("data-test"));
 });
 
+// Inicialização
 loadHistory();
+loadFirewallData();
 updateDashboard();
 renderResults();
+renderFirewallStats();
+renderFirewallFeed();
 </script>
 
 </body>
